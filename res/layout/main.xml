@@ -39,6 +39,7 @@
 		android:layout_gravity="center">
 		<ImageView
 			android:src="@drawable/hm_launcher_72px"
+			android:id="@+id/action_btn"
 		   	android:layout_width="wrap_content"
 		   	android:layout_height="wrap_content"
 		   	android:layout_gravity="center_vertical"/> 

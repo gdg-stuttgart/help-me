@@ -20,13 +20,13 @@ public class HelpMePreferences extends PreferenceActivity {
 		PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
 		
 		PreferenceCategory contactCategory = new PreferenceCategory(this);
-		contactCategory.setTitle("Contacts");
+		contactCategory.setTitle(R.string.contacts_pref_cat_title);
 		root.addPreference(contactCategory);
 		
 		PreferenceScreen contacts = getPreferenceManager().createPreferenceScreen(this);
 		contacts.setIntent(new Intent(this, ContactManager.class));
-		contacts.setTitle("Contact List");
-		contacts.setSummary("Choose Emergency Contacts...");
+		contacts.setTitle(R.string.contacts_pref_title);
+		contacts.setSummary(R.string.contacts_pref_summary);
 		contactCategory.addPreference(contacts);
 
 		return root;

@@ -16,7 +16,7 @@ public class HelpME extends Activity {
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	menu.add(0, Menu.FIRST, Menu.NONE, "Settings");
+    	menu.add(0, Menu.FIRST, Menu.NONE, R.string.settings_title);
     	return super.onCreateOptionsMenu(menu);
     }
     

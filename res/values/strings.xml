@@ -2,6 +2,10 @@
 <resources>
     <string name="hello">Hello World, HelpME!</string>
     <string name="app_name">HelpME</string>
+    <string name="settings_title">Settings</string>
+    <string name="contacts_pref_cat_title">Contacts</string>
+    <string name="contacts_pref_title">Emergency Contacts</string>
+    <string name="contacts_pref_summary">Choose Contacts...</string>
     
     <!-- FaKods stuff -->
     <string name="accountSpinnerLabel">Account</string>

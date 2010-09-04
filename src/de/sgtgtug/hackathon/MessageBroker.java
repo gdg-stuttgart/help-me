@@ -21,6 +21,13 @@ import android.widget.Button;
 
 public class MessageBroker extends Activity {
 	private static String LOG_TAG = "MessageBroker";
+	
+	public final static String SMS = "sms";
+	public final static String EMAIL = "email";
+	
+	private boolean SEND_SMS = false;
+	private boolean SEND_EMAIL = false;
+	
 	private StringBuffer msgBfr = new StringBuffer();
 	
     /** Called when the activity is first created. */
@@ -28,6 +35,10 @@ public class MessageBroker extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.message_broker);
+        Intent helpME = getIntent();
+        Bundle extras = helpME.getExtras();
+        SEND_SMS = extras.getBoolean(SMS);
+        SEND_EMAIL = extras.getBoolean(EMAIL);
         
         Button sendBtn = (Button) findViewById(R.id.sendBtn);
         sendBtn.setOnClickListener(new OnClickListener() {
@@ -39,6 +50,7 @@ public class MessageBroker extends Activity {
 				BrokerContact c1 = new BrokerContact("01638792012", "onlythoughtworks@googlemail.com");
 				contacts.add(c1);
 				sendMessages(contacts);
+				finish();
 			}
 		});
     }
@@ -47,17 +59,21 @@ public class MessageBroker extends Activity {
 		String msg = buildMsg();
 		
 		for (BrokerContact contact : contacts) {
-			sendSMS(msgBfr.toString(), contact.sms);
-//			sendEmail(msgBfr.toString(), contact.email);
+			if(SEND_SMS)
+				sendSMS(msgBfr.toString(), contact.sms);
+			if(SEND_EMAIL)
+				sendEmail(msgBfr.toString(), contact.email);
 		}
 		msgBfr = new StringBuffer();
 	}
 	
     private void sendEmail(String message, String sendTo) {
-    	Intent intent = new Intent(Intent.ACTION_SENDTO, 
-        Uri.fromParts("mailto", "sendTo", null));
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    	startActivity(intent);
+    	final Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("plain/text");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{sendTo});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Help Me!");
+        intent.putExtra(Intent.EXTRA_TEXT, message);
+        startActivity(intent);
 	}
 
 	private void sendSMS(String message, String sendTo ) {
@@ -84,7 +100,7 @@ public class MessageBroker extends Activity {
     	}
     	
     	List<Address> addresses = resolveLocation(currLoc);
-    	if (addresses != null) {
+    	if (addresses != null && !addresses.isEmpty()) {
             Address currentAddress = addresses.get(0);
             if (currentAddress.getMaxAddressLineIndex() > 0) {
               for (int i = 0; i < currentAddress.getMaxAddressLineIndex(); i++) {

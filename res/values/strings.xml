@@ -23,4 +23,13 @@
     <string name="showInvisible">Show Invisible Contacts (Only)</string>
     <string name="targetAccountLabel">Target Account</string>
     <string name="undefinedTypeLabel">(Undefined)</string>
+    
+    <!-- [e]lektrojung[e]'s stuff -->
+    <string name="preferences_headline">Preferences</string>
+    <string name="preferences_subheadline">Your personal data</string>
+    <string name="preferences_name">Name:</string>
+    <string name="preferences_sex">Your Name</string>
+    <string name="preferences_age">Your Age</string>
+    <string name="preferences_insurance">Your Insurance</string>
+    <string name="preferences_insurance_id">Your Insurance\'s I</string>
 </resources>

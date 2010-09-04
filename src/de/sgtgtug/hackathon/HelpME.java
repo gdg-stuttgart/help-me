@@ -16,7 +16,7 @@ public class HelpME extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        Button action_btn = (Button) findViewById(R.id.action_btn);
+        Button action_btn = (Button) findViewById(R.id.);
         action_btn.setOnClickListener(new OnClickListener() {
 			
 			@Override

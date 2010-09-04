@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, HelpME!</string>
     <string name="app_name">HelpME</string>
+    <string name="test_sms">Send Message Test</string>
 </resources>

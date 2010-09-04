@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 public class HelpME extends Activity {
     /** Called when the activity is first created. */
@@ -12,10 +15,18 @@ public class HelpME extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-//        Intent msgBroker = new Intent(HelpME.this, MessageBroker.class);
-//        msgBroker.putExtra(MessageBroker.SMS, true);
-//        msgBroker.putExtra(MessageBroker.EMAIL, true);
-//        startActivity(msgBroker);
+        
+        Button action_btn = (Button) findViewById(R.id.action_btn);
+        action_btn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent msgBroker = new Intent(HelpME.this, MessageBroker.class);
+		        msgBroker.putExtra(MessageBroker.SMS, true);
+		        msgBroker.putExtra(MessageBroker.EMAIL, true);
+		        startActivity(msgBroker);
+			}
+		});
     }
     
     @Override

@@ -11,7 +11,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -40,25 +39,27 @@ public class MessageBroker extends Activity {
         SEND_SMS = extras.getBoolean(SMS);
         SEND_EMAIL = extras.getBoolean(EMAIL);
         
+        final List<MessageBroker.BrokerContact> allEmergencyContacts = PreferencesUtil.getAllEmergencyContacts(this);
+        
         Button sendBtn = (Button) findViewById(R.id.sendBtn);
         sendBtn.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				ArrayList<BrokerContact> contacts = new ArrayList<BrokerContact>();
+//				ArrayList<BrokerContact> contacts = new ArrayList<BrokerContact>();
 //				BrokerContact c1 = new BrokerContact("5556", "onlythoughtworks@googlemail.com");
-				BrokerContact c1 = new BrokerContact("01638792012", "onlythoughtworks@googlemail.com");
-				contacts.add(c1);
-				sendMessages(contacts);
+//				BrokerContact c1 = new BrokerContact("01638792012", "onlythoughtworks@googlemail.com");
+//				contacts.add(c1);
+				sendMessages(allEmergencyContacts);
 				finish();
 			}
 		});
     }
     
-	private void sendMessages(ArrayList<BrokerContact> contacts) {
+	private void sendMessages(List<MessageBroker.BrokerContact> contacts) {
 		String msg = buildMsg();
 		
-		for (BrokerContact contact : contacts) {
+		for (MessageBroker.BrokerContact contact : contacts) {
 			if(SEND_SMS)
 				sendSMS(msgBfr.toString(), contact.sms);
 			if(SEND_EMAIL)
@@ -136,7 +137,7 @@ public class MessageBroker extends Activity {
         }
     }
     
-    public class BrokerContact {
+    public static class BrokerContact {
     	public String sms;
     	public String email;
     	

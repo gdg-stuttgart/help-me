@@ -17,6 +17,7 @@
 package de.sgtgtug.hackathon;
 
 import android.app.Activity;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,9 +27,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public final class ContactManager extends Activity
 {
@@ -75,10 +76,25 @@ public final class ContactManager extends Activity
                       
                 int columnIndexOfID = cursor.getColumnIndexOrThrow(ContactsContract.Data._ID);
                 
+                StringBuffer contactsString = new StringBuffer();
+                
                 for(long i : checkedItemIds) {
                 	cursor.moveToPosition((int) i-1);
-                	Log.d(TAG, "Selected Contact ID is: " + cursor.getLong(columnIndexOfID));
+                	
+                	long contactId = cursor.getLong(columnIndexOfID);
+                	
+                	if (contactsString.length() == 0){
+                		contactsString.append(contactId);
+                	} else {
+                		contactsString.append(":" + contactId);
+                	}
+                	Log.d(TAG, "Selected Contact ID is: " + contactId);                	
                 }
+                
+                Editor edit = getPreferences(MODE_PRIVATE).edit();
+                edit.putString("contactIds", contactsString.toString());
+                
+                finish();
             }
         });
         mShowInvisibleControl.setOnCheckedChangeListener(new OnCheckedChangeListener() {

@@ -7,13 +7,13 @@
     <ListView android:layout_width="fill_parent"
               android:id="@+id/contactList"
               android:layout_height="wrap_content"
-              android:layout_weight="1"/>
+              android:layout_weight="1" android:choiceMode="multipleChoice"/>
     <CheckBox android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:id="@+id/showInvisible"
               android:text="@string/showInvisible"/>
-    <!--  Button android:layout_width="fill_parent"
+    <Button android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/addContactButton"
-            android:text="@string/addContactButtonLabel"/ -->
+            android:id="@+id/doneContactButton"
+            android:text="@string/doneContactButtonLabel"/>
 </LinearLayout>

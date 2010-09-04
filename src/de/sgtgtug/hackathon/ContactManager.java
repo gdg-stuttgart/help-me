@@ -17,26 +17,27 @@
 package de.sgtgtug.hackathon;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public final class ContactManager extends Activity
 {
 
     public static final String TAG = "ContactManager";
 
-    //private Button mAddAccountButton;
+    private Button mDoneButton;
     private ListView mContactList;
     private boolean mShowInvisible;
     private CheckBox mShowInvisibleControl;
@@ -52,21 +53,36 @@ public final class ContactManager extends Activity
         setContentView(R.layout.contact_manager);
 
         // Obtain handles to UI objects
-        //mAddAccountButton = (Button) findViewById(R.id.addContactButton);
+        mDoneButton = (Button) findViewById(R.id.doneContactButton);
         mContactList = (ListView) findViewById(R.id.contactList);
+        
+        
+
+        
+        
         mShowInvisibleControl = (CheckBox) findViewById(R.id.showInvisible);
 
         // Initialize class properties
         mShowInvisible = false;
         mShowInvisibleControl.setChecked(mShowInvisible);
 
-        // Register handler for UI elements
-//        mAddAccountButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                Log.d(TAG, "mAddAccountButton clicked");
-//                launchContactAdder();
-//            }
-//        });
+         //Register handler for UI elements
+        mDoneButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Log.d(TAG, "mDoneButton clicked");
+                
+                long[] checkedItemIds = mContactList.getCheckedItemIds();
+                SimpleCursorAdapter sca = (SimpleCursorAdapter)mContactList.getAdapter();
+                Cursor cursor = sca.getCursor();
+                      
+                int columnIndexOfID = cursor.getColumnIndexOrThrow(ContactsContract.Data._ID);
+                
+                for(long i : checkedItemIds) {
+                	cursor.moveToPosition((int) i-1);
+                	Log.d(TAG, "Selected Contact ID is: " + cursor.getLong(columnIndexOfID));
+                }
+            }
+        });
         mShowInvisibleControl.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.d(TAG, "mShowInvisibleControl changed: " + isChecked);
@@ -88,9 +104,20 @@ public final class ContactManager extends Activity
         String[] fields = new String[] {
                 ContactsContract.Data.DISPLAY_NAME
         };
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.contact_entry, cursor,
-                fields, new int[] {R.id.contactEntryText});
+//        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.contact_entry, cursor,
+//                fields, new int[] {R.id.contactEntryText});
+//        mContactList.setAdapter(adapter);
+        
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_multiple_choice, cursor,
+                fields, new int[] {android.R.id.text1});
+        mContactList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        
         mContactList.setAdapter(adapter);
+        
+        
+//        mContactList.setAdapter(new ArrayAdapter<String>(this,
+//                android.R.layout.simple_list_item_multiple_choice, lv_items));
+//                mContactList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
     }
 
     /**
@@ -113,12 +140,37 @@ public final class ContactManager extends Activity
 
         return managedQuery(uri, projection, selection, selectionArgs, sortOrder);
     }
-
-    /**
-     * Launches the ContactAdder activity to add a new contact to the selected accont.
-     */
-    protected void launchContactAdder() {
-        //Intent i = new Intent(this, ContactAdder.class);
-        //startActivity(i);
-    }
+    
+//    public class CheckedCursorAdapter extends SimpleCursorAdapter {
+//
+//        Activity context;
+//        Cursor c;
+//
+//        public CheckedCursorAdapter(Activity context, int rowContact, Cursor cursor, String[] strings, int[] is) {
+//          super(context, rowContact, cursor, strings, is);
+//          this.context = context;
+//          this.c = cursor;
+//
+//        }
+//
+//        public View getView(int position, View convertView, ViewGroup parent) {
+//          View row = convertView;
+//          ContactRowWrapper wrapper;
+//
+//          if (row == null) {
+//            LayoutInflater inflater=context.getLayoutInflater();
+//            row = inflater.inflate(R.layout.row_contact, null);
+//            //
+//            wrapper = new ContactRowWrapper(row);
+//            row.setTag(wrapper);
+//          } else {
+//            wrapper = (ContactRowWrapper)row.getTag();
+//          }
+//          c.moveToPosition(position);
+//          wrapper.getTextView().setText( c.getString(c.getColumnIndex(Contacts.People.NUMBER)) );
+//          wrapper.getcheckBox().setText( c.getString(c.getColumnIndex(Contacts.People.NAME)) );
+//          wrapper.getcheckBox().setChecked(getListView().isItemChecked(position));
+//          //
+//          return row;
+//        }
 }

@@ -5,7 +5,7 @@
     
     <!-- FaKods stuff -->
     <string name="accountSpinnerLabel">Account</string>
-    <string name="addContactButtonLabel">Add Contact</string>
+    <string name="doneContactButtonLabel">done...</string>
     <string name="addContactTitle">Add Contact</string>
     <string name="allAccounts">All Accounts</string>
     <string name="contactCreationFailure">Contact creation failed, check logs.</string>

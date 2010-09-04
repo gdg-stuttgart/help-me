@@ -36,7 +36,7 @@ public final class ContactManager extends Activity
 
     public static final String TAG = "ContactManager";
 
-    private Button mAddAccountButton;
+    //private Button mAddAccountButton;
     private ListView mContactList;
     private boolean mShowInvisible;
     private CheckBox mShowInvisibleControl;
@@ -52,7 +52,7 @@ public final class ContactManager extends Activity
         setContentView(R.layout.contact_manager);
 
         // Obtain handles to UI objects
-        mAddAccountButton = (Button) findViewById(R.id.addContactButton);
+        //mAddAccountButton = (Button) findViewById(R.id.addContactButton);
         mContactList = (ListView) findViewById(R.id.contactList);
         mShowInvisibleControl = (CheckBox) findViewById(R.id.showInvisible);
 
@@ -61,12 +61,12 @@ public final class ContactManager extends Activity
         mShowInvisibleControl.setChecked(mShowInvisible);
 
         // Register handler for UI elements
-        mAddAccountButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Log.d(TAG, "mAddAccountButton clicked");
-                launchContactAdder();
-            }
-        });
+//        mAddAccountButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                Log.d(TAG, "mAddAccountButton clicked");
+//                launchContactAdder();
+//            }
+//        });
         mShowInvisibleControl.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.d(TAG, "mShowInvisibleControl changed: " + isChecked);
@@ -88,7 +88,7 @@ public final class ContactManager extends Activity
         String[] fields = new String[] {
                 ContactsContract.Data.DISPLAY_NAME
         };
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.account_entry, cursor,
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.contact_entry, cursor,
                 fields, new int[] {R.id.contactEntryText});
         mContactList.setAdapter(adapter);
     }

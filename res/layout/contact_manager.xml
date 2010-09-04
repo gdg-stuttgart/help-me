@@ -12,8 +12,8 @@
               android:layout_height="wrap_content"
               android:id="@+id/showInvisible"
               android:text="@string/showInvisible"/>
-    <Button android:layout_width="fill_parent"
+    <!--  Button android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/addContactButton"
-            android:text="@string/addContactButtonLabel"/>
+            android:text="@string/addContactButtonLabel"/ -->
 </LinearLayout>

@@ -16,10 +16,9 @@ public class HelpME extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        Button action_btn = (Button) findViewById(R.id.);
+        Button action_btn = (Button) findViewById(R.id.action_btn);
         action_btn.setOnClickListener(new OnClickListener() {
 			
-			@Override
 			public void onClick(View v) {
 				Intent msgBroker = new Intent(HelpME.this, MessageBroker.class);
 		        msgBroker.putExtra(MessageBroker.SMS, true);

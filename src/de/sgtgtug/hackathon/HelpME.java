@@ -7,7 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.ImageView;
 
 public class HelpME extends Activity {
     /** Called when the activity is first created. */
@@ -16,7 +16,7 @@ public class HelpME extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        Button action_btn = (Button) findViewById(R.id.action_btn);
+        ImageView action_btn = (ImageView) findViewById(R.id.action_btn);
         action_btn.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {

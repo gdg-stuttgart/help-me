@@ -12,10 +12,10 @@ public class HelpME extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        Intent msgBroker = new Intent(HelpME.this, MessageBroker.class);
-        msgBroker.putExtra(MessageBroker.SMS, true);
-        msgBroker.putExtra(MessageBroker.EMAIL, true);
-        startActivity(msgBroker);
+//        Intent msgBroker = new Intent(HelpME.this, MessageBroker.class);
+//        msgBroker.putExtra(MessageBroker.SMS, true);
+//        msgBroker.putExtra(MessageBroker.EMAIL, true);
+//        startActivity(msgBroker);
     }
     
     @Override

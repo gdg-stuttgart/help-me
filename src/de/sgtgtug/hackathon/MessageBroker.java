@@ -1,16 +1,17 @@
 package de.sgtgtug.hackathon;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -34,6 +35,7 @@ public class MessageBroker extends Activity {
 			@Override
 			public void onClick(View v) {
 				ArrayList<BrokerContact> contacts = new ArrayList<BrokerContact>();
+//				BrokerContact c1 = new BrokerContact("5556", "onlythoughtworks@googlemail.com");
 				BrokerContact c1 = new BrokerContact("01638792012", "onlythoughtworks@googlemail.com");
 				contacts.add(c1);
 				sendMessages(contacts);
@@ -46,13 +48,16 @@ public class MessageBroker extends Activity {
 		
 		for (BrokerContact contact : contacts) {
 			sendSMS(msgBfr.toString(), contact.sms);
-			sendEmail(msgBfr.toString(), contact.email);
+//			sendEmail(msgBfr.toString(), contact.email);
 		}
 		msgBfr = new StringBuffer();
 	}
 	
     private void sendEmail(String message, String sendTo) {
-    	
+    	Intent intent = new Intent(Intent.ACTION_SENDTO, 
+        Uri.fromParts("mailto", "sendTo", null));
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    	startActivity(intent);
 	}
 
 	private void sendSMS(String message, String sendTo ) {
@@ -60,8 +65,7 @@ public class MessageBroker extends Activity {
     	
     	ArrayList<String> chunkedMessages = smsMngr.divideMessage(message);
         for (String messageChunk : chunkedMessages)
-        	smsMngr.sendTextMessage(sendTo, null, messageChunk, null, null);
-    	smsMngr.sendTextMessage(sendTo, this.getString(R.string.app_name), message, null, null);
+        	smsMngr.sendTextMessage(sendTo, this.getString(R.string.app_name), messageChunk, null, null);
     }
     
     private String buildMsg() {
@@ -74,9 +78,12 @@ public class MessageBroker extends Activity {
     private String getEmergencyLocation() {
     	StringBuffer locBuf = new StringBuffer();
     	Location currLoc = getCurrentLocation();
-    	locBuf.append("I'm at: " + currLoc.toString() + "\n");
-    	List<Address> addresses = resolveLocation(currLoc);
+    	if(currLoc != null) {
+        	Log.i(LOG_TAG, "Current  Location -> Lat: " + currLoc.getLatitude() + "Long: " + currLoc.getLongitude());
+    		locBuf.append("I'm at Lat: " + currLoc.getLatitude() + " Long: " + currLoc.getLongitude() + "\n");
+    	}
     	
+    	List<Address> addresses = resolveLocation(currLoc);
     	if (addresses != null) {
             Address currentAddress = addresses.get(0);
             if (currentAddress.getMaxAddressLineIndex() > 0) {
@@ -95,14 +102,19 @@ public class MessageBroker extends Activity {
     
     private Location getCurrentLocation() {
     	LocationManager locMngr = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        return locMngr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    	Location currLoc = null;
+    	currLoc = locMngr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    	if(currLoc == null) {
+    		currLoc = locMngr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+    	}
+    	return currLoc;
     }
     
     private List<Address> resolveLocation(Location currLoc) {
         Geocoder gCoder = new Geocoder(getApplicationContext(), Locale.getDefault());
         try {
           return gCoder.getFromLocation(currLoc.getLatitude(), currLoc.getLongitude(), 1);
-        } catch (IOException e) {
+        } catch (Exception e) {
         	Log.e(LOG_TAG, "Could not resolve GeoLocation, here is what i know: " + e.getMessage());
         	return null;
         }

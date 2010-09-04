@@ -5,13 +5,15 @@ import java.util.List;
 
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Data;
+import android.util.Log;
 
 public class PreferencesUtil {
 
-	public final static List<Long> getEmergencyContactIdsFromPreferences(SharedPreferences preferences) {
+	public final static List<Long> loadEmergencyContactIdsFromPreferences(SharedPreferences preferences) {
 
 		String contactIds = preferences.getString("contactIds", "");
 
@@ -29,6 +31,23 @@ public class PreferencesUtil {
 
 		return ids;
 	}
+	
+	public final static void saveEmergencyContactIdsToPreferences(SharedPreferences preferences, List<Long> ids){
+		StringBuffer preferencesString = new StringBuffer();
+		
+		for (Long id : ids) {
+
+			if (preferencesString.length() == 0) {
+				preferencesString.append(id);
+			} else {
+				preferencesString.append(":" + id);
+			}
+		}
+
+		Editor editor = preferences.edit();
+		editor.putString("contactIds", preferencesString.toString());
+		editor.commit();
+	}
 
 	public final static String getSingleEmergencyContact(ContentResolver cr, long id) {
 		Cursor cur = cr.query(Data.CONTENT_URI, new String[] { Phone.NUMBER }, Data.CONTACT_ID + "=?" + " AND " + Data.MIMETYPE + "='" + Phone.CONTENT_ITEM_TYPE + "'", new String[] { String.valueOf(id) }, null);
@@ -41,7 +60,7 @@ public class PreferencesUtil {
 	
 	public final static List<String> getAllEmergencyContacts(SharedPreferences preferences, ContentResolver cr){
 		List<String> emergencyContacts = new ArrayList<String>();
-		List<Long> ids = getEmergencyContactIdsFromPreferences(preferences);
+		List<Long> ids = loadEmergencyContactIdsFromPreferences(preferences);
 		for (Long id : ids){
 			emergencyContacts.add(getSingleEmergencyContact(cr, id));
 		}

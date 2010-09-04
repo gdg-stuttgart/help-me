@@ -16,10 +16,10 @@
 
 package de.sgtgtug.hackathon;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,7 +37,6 @@ public final class ContactManager extends Activity {
 	private Button mDoneButton;
 	private ListView mContactList;
 	private boolean mShowInvisible;
-//	private CheckBox mShowInvisibleControl;
 
 	/**
 	 * Called when the activity is first created. Responsible for initializing
@@ -63,26 +62,18 @@ public final class ContactManager extends Activity {
 				Cursor cursor = sca.getCursor();
 
 				int columnIndexOfID = cursor.getColumnIndexOrThrow(ContactsContract.Data._ID);
-
-				StringBuffer contactsString = new StringBuffer();
+				
+				List<Long> contactIds = new ArrayList<Long>();
 
 				for (long i : checkedItemIds) {
 					cursor.moveToPosition((int) i - 1);
 
 					long contactId = cursor.getLong(columnIndexOfID);
-
-					if (contactsString.length() == 0) {
-						contactsString.append(contactId);
-					} else {
-						contactsString.append(":" + contactId);
-					}
-
-					Log.d(TAG, "Selected Contact ID is: " + contactId);
+					
+					contactIds.add(contactId);
 				}
-
-				Editor editor = getPreferences(MODE_PRIVATE).edit();
-				editor.putString("contactIds", contactsString.toString());
-				editor.commit();
+				
+				PreferencesUtil.saveEmergencyContactIdsToPreferences(getPreferences(MODE_PRIVATE), contactIds);
 
 				finish();
 			}
@@ -99,7 +90,7 @@ public final class ContactManager extends Activity {
 			return;
 		};
 		
-		List<Long> ids = PreferencesUtil.getEmergencyContactIdsFromPreferences(getPreferences(MODE_PRIVATE));
+		List<Long> ids = PreferencesUtil.loadEmergencyContactIdsFromPreferences(getPreferences(MODE_PRIVATE));
 		
 		SimpleCursorAdapter sca = (SimpleCursorAdapter) mContactList.getAdapter();
 		Cursor cursor = sca.getCursor();

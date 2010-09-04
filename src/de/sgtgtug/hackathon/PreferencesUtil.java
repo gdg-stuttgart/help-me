@@ -9,7 +9,6 @@ import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Data;
-import android.util.Log;
 
 public class PreferencesUtil {
 

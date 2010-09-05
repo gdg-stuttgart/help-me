@@ -41,19 +41,11 @@ public class MessageBroker extends Activity {
         
         final List<MessageBroker.BrokerContact> allEmergencyContacts = PreferencesUtil.getAllEmergencyContacts(this);
         
-        Button sendBtn = (Button) findViewById(R.id.sendBtn);
-        sendBtn.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-//				ArrayList<BrokerContact> contacts = new ArrayList<BrokerContact>();
-//				BrokerContact c1 = new BrokerContact("5556", "onlythoughtworks@googlemail.com");
-//				BrokerContact c1 = new BrokerContact("01638792012", "onlythoughtworks@googlemail.com");
-//				contacts.add(c1);
-				sendMessages(allEmergencyContacts);
-				finish();
-			}
-		});
+		ArrayList<BrokerContact> contacts = new ArrayList<BrokerContact>();
+		BrokerContact c1 = new BrokerContact("5556", "");
+		contacts.add(c1);
+		sendMessages(allEmergencyContacts);
+		finish();
     }
     
 	private void sendMessages(List<MessageBroker.BrokerContact> contacts) {

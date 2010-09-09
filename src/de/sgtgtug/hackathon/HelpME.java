@@ -56,8 +56,14 @@ public class HelpME extends Activity implements OnInitListener {
 		action_btn.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				if (STT_AVAILABLE)
+				if (STT_AVAILABLE) {
+					mTts.speak("Speak your help message now"
+							, TextToSpeech.QUEUE_FLUSH, null);
+					
+					//synchronous TTS
+					while (mTts.isSpeaking()) {	}
 					startVoiceRecognitionActivity();
+				}
 				else
 					requestHelp(null);
 			}
@@ -123,6 +129,7 @@ public class HelpME extends Activity implements OnInitListener {
 		if (requestCode == TTS_CHECK_CODE) {
 			if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
 				mTts = new TextToSpeech(this, this);
+				mTts.setLanguage(locale);
 			} else {
 				this.showDialog(DIALOG_NO_TTS);
 			}
@@ -241,7 +248,6 @@ public class HelpME extends Activity implements OnInitListener {
 			smsMngr.sendTextMessage(sendTo, this.getString(R.string.app_name),
 					messageChunk, null, null);
 
-		mTts.setLanguage(locale);
 		mTts.speak("The following message has been sent: "
 				+ msg, TextToSpeech.QUEUE_FLUSH, null);
 	}

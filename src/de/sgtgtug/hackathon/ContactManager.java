@@ -58,22 +58,25 @@ public final class ContactManager extends Activity {
 				Log.d(TAG, "mDoneButton clicked");
 
 				long[] checkedItemIds = mContactList.getCheckedItemIds();
-				SimpleCursorAdapter sca = (SimpleCursorAdapter) mContactList.getAdapter();
+				SimpleCursorAdapter sca = (SimpleCursorAdapter) mContactList
+						.getAdapter();
 				Cursor cursor = sca.getCursor();
 
-				int columnIndexOfID = cursor.getColumnIndexOrThrow(ContactsContract.Data._ID);
-				
+				int columnIndexOfID = cursor
+						.getColumnIndexOrThrow(ContactsContract.Data._ID);
+
 				List<Long> contactIds = new ArrayList<Long>();
 
 				for (long i : checkedItemIds) {
 					cursor.moveToPosition((int) i - 1);
 
 					long contactId = cursor.getLong(columnIndexOfID);
-					
+
 					contactIds.add(contactId);
 				}
-				
-				PreferencesUtil.saveEmergencyContactIdsToPreferences(getPreferences(MODE_PRIVATE), contactIds);
+
+				PreferencesUtil.saveEmergencyContactIdsToPreferences(
+						getPreferences(MODE_PRIVATE), contactIds);
 
 				finish();
 			}
@@ -85,20 +88,24 @@ public final class ContactManager extends Activity {
 	}
 
 	private void setCheckBoxes() {
-		
-		if (mContactList.getAdapter().getCount() == 0){
+
+		if (mContactList.getAdapter().getCount() == 0) {
 			return;
-		};
-		
-		List<Long> ids = PreferencesUtil.loadEmergencyContactIdsFromPreferences(getPreferences(MODE_PRIVATE));
-		
-		SimpleCursorAdapter sca = (SimpleCursorAdapter) mContactList.getAdapter();
+		}
+		;
+
+		List<Long> ids = PreferencesUtil
+				.loadEmergencyContactIdsFromPreferences(getPreferences(MODE_PRIVATE));
+
+		SimpleCursorAdapter sca = (SimpleCursorAdapter) mContactList
+				.getAdapter();
 		Cursor cursor = sca.getCursor();
-		int columnIndexOfID = cursor.getColumnIndexOrThrow(ContactsContract.Data._ID);
-		
-		for (int i = 0; i < mContactList.getAdapter().getCount(); i++){
+		int columnIndexOfID = cursor
+				.getColumnIndexOrThrow(ContactsContract.Data._ID);
+
+		for (int i = 0; i < mContactList.getAdapter().getCount(); i++) {
 			cursor.moveToPosition(i);
-			if (ids.contains(cursor.getLong(columnIndexOfID))){
+			if (ids.contains(cursor.getLong(columnIndexOfID))) {
 				mContactList.setItemChecked(i, true);
 			}
 		}
@@ -112,7 +119,9 @@ public final class ContactManager extends Activity {
 		Cursor cursor = getContacts();
 		String[] fields = new String[] { ContactsContract.Data.DISPLAY_NAME };
 
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_multiple_choice, cursor, fields, new int[] { android.R.id.text1 });
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
+				android.R.layout.simple_list_item_multiple_choice, cursor,
+				fields, new int[] { android.R.id.text1 });
 		mContactList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
 		mContactList.setAdapter(adapter);
@@ -126,11 +135,15 @@ public final class ContactManager extends Activity {
 	private Cursor getContacts() {
 		// Run query
 		Uri uri = ContactsContract.Contacts.CONTENT_URI;
-		String[] projection = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME };
-		String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '" + (mShowInvisible ? "0" : "1") + "'";
+		String[] projection = new String[] { ContactsContract.Contacts._ID,
+				ContactsContract.Contacts.DISPLAY_NAME };
+		String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '"
+				+ (mShowInvisible ? "0" : "1") + "'";
 		String[] selectionArgs = null;
-		String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
+		String sortOrder = ContactsContract.Contacts.DISPLAY_NAME
+				+ " COLLATE LOCALIZED ASC";
 
-		return managedQuery(uri, projection, selection, selectionArgs, sortOrder);
+		return managedQuery(uri, projection, selection, selectionArgs,
+				sortOrder);
 	}
 }

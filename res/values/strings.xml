@@ -32,4 +32,20 @@
     <string name="preferences_age">Your Age</string>
     <string name="preferences_insurance">Your Insurance</string>
     <string name="preferences_insurance_id">Your Insurance\'s I</string>
+    
+    <!-- Language Selection -->
+    <string name="language_selection">Select Language</string>
+    <string name="language_us_En">English (US)</string>
+    <string name="language_de">Germany</string>
+    <string name="language_fr">France</string>
+
+ 	<!-- Language Model -->
+	<string name="lang_model_selection">Language Model</string>
+	<string name="lang_model_free_form">Text Query (Free Form)</string>
+	<string name="lang_model_web_search">Web Search Query</string>
+
+    <!-- tts -->
+    <string name="tts_install">Install</string>
+    <string name="tts_cancel">Cancel</string>
+    <string name="trigger_stt_translate">Speak!</string>
 </resources>

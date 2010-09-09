@@ -1,46 +1,356 @@
 package de.sgtgtug.hackathon;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
+import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
-public class HelpME extends Activity {
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        
-        ImageView action_btn = (ImageView) findViewById(R.id.action_btn);
-        action_btn.setOnClickListener(new OnClickListener() {
-			
+public class HelpME extends Activity implements OnInitListener {
+	private static String LOG_TAG = "HelpME";
+
+	private static final int VOICE_RECOGNITION_REQUEST_CODE = 0x000;
+	private static final int TTS_CHECK_CODE = 0x001;
+	private static final int DIALOG_NO_TTS = 0x002;
+
+	private boolean STT_AVAILABLE = false;
+	private boolean MSG_TYPE_SMS = true;
+	private boolean MSG_TYPE_EMAIL = false;
+
+	private Locale locale;
+	private TextToSpeech mTts = null;
+
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+
+		locale = Locale.US;
+
+		checkforSpeechServices();
+
+		ImageView action_btn = (ImageView) findViewById(R.id.action_btn);
+		action_btn.setOnClickListener(new OnClickListener() {
+
 			public void onClick(View v) {
-				Intent msgBroker = new Intent(HelpME.this, MessageBroker.class);
-		        msgBroker.putExtra(MessageBroker.SMS, true);
-		        msgBroker.putExtra(MessageBroker.EMAIL, true);
-		        startActivity(msgBroker);
+				if (STT_AVAILABLE)
+					startVoiceRecognitionActivity();
+				else
+					requestHelp(null);
 			}
 		});
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-    	menu.add(0, Menu.FIRST, Menu.NONE, R.string.settings_title);
-    	return super.onCreateOptionsMenu(menu);
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	switch (item.getItemId()){
-    	case Menu.FIRST: 
-    		startActivity(new Intent(this, HelpMePreferences.class));
-    		break;
-    	}
-    	return super.onOptionsItemSelected(item);
-    }
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, Menu.FIRST, Menu.NONE, R.string.settings_title);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case Menu.FIRST:
+			startActivity(new Intent(this, HelpMePreferences.class));
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	protected Dialog onCreateDialog(final int pDialogID) {
+		switch (pDialogID) {
+		case DIALOG_NO_TTS:
+			return new AlertDialog.Builder(this).setTitle("STT-Error").setIcon(
+					android.R.drawable.ic_dialog_alert).setMessage(
+					"Sorry, tts service not installed...fetch()?")
+					.setNegativeButton(R.string.tts_cancel,
+							new Dialog.OnClickListener() {
+								public void onClick(
+										final DialogInterface pDialog,
+										final int pWhich) {
+									dismissDialog(pWhich);
+								}
+							}).setPositiveButton(R.string.tts_install,
+							new Dialog.OnClickListener() {
+								public void onClick(
+										final DialogInterface pDialog,
+										final int pWhich) {
+									Intent installIntent = new Intent();
+									installIntent
+											.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+									startActivity(installIntent);
+								}
+							}).create();
+		default:
+			return super.onCreateDialog(pDialogID);
+		}
+	}
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE) {
+			if (resultCode == RESULT_OK) {
+				ArrayList<String> matches = data
+						.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+				requestHelp(matches);
+			} else {
+				requestHelp(null);
+			}
+		}
+
+		if (requestCode == TTS_CHECK_CODE) {
+			if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+				mTts = new TextToSpeech(this, this);
+			} else {
+				this.showDialog(DIALOG_NO_TTS);
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	protected void onDestroy() {
+		if (mTts != null)
+			mTts.shutdown();
+		super.onDestroy();
+	}
+
+	public void onInit(int status) {
+	}
+
+	/**
+	 * Checks if text-to-speech/speech-to-text services are available on device.
+	 * If not TTS will be installed
+	 */
+	private void checkforSpeechServices() {
+		Intent checkIntent = new Intent();
+		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+		startActivityForResult(checkIntent, TTS_CHECK_CODE);
+
+		PackageManager pm = getPackageManager();
+		List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(
+				RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+		if (activities.size() > 0)
+			STT_AVAILABLE = true;
+		else
+			Log.w(LOG_TAG, "Recognizer not present");
+	}
+
+	/**
+	 * Reads contacts which should be notified and triggers sending help message
+	 * 
+	 * @param voiceText
+	 *            an array containing voice recognition help message text
+	 */
+	private void requestHelp(ArrayList<String> voiceText) {
+		String helpMsg = createHelpMsg(voiceText != null
+				&& voiceText.size() > 0 ? voiceText.get(0) : "");
+		// does not work yet...
+		// final List<HelpME.BrokerContact> allEmergencyContacts =
+		// PreferencesUtil
+		// .getAllEmergencyContacts(this);
+		ArrayList<HelperContact> testContact = new ArrayList<HelperContact>();
+		HelperContact c1 = new HelperContact("5556", "");
+		testContact.add(c1);
+		sendHelpMsgs(testContact, helpMsg);
+	}
+
+	/**
+	 * Choose message types and send sms/email
+	 * 
+	 * @param contacts
+	 *            list of contacts which should be notified
+	 */
+	private void sendHelpMsgs(List<HelperContact> contacts, String msg) {
+		for (HelperContact contact : contacts) {
+			if (MSG_TYPE_SMS)
+				sendSMS(msg.toString(), contact.sms);
+			if (MSG_TYPE_EMAIL)
+				sendEmail(msg.toString(), contact.email);
+		}
+	}
+
+	/**
+	 * Creates a help message consisting of geo-location and voice message
+	 * 
+	 * @param voiceMsg
+	 *            String representation of recorded voice message
+	 * @return Returns a message containing geo-location and help message
+	 */
+	private String createHelpMsg(String voiceMsg) {
+		StringBuffer msgBfr = new StringBuffer();
+		/** @TODO Read general health settings and append to buffer */
+		msgBfr.append("Help Me, \n");
+		msgBfr.append(getEmergencyLocation());
+		msgBfr.append("Message: " + voiceMsg + "\n");
+		return msgBfr.toString();
+	}
+
+	/**
+	 * Sends help Email to contacts
+	 * 
+	 * @param message
+	 *            the message to be sent
+	 * @param sendTo
+	 *            the recipient of the help message
+	 */
+	private void sendEmail(String message, String sendTo) {
+		final Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("plain/text");
+		intent.putExtra(Intent.EXTRA_EMAIL, new String[] { sendTo });
+		intent.putExtra(Intent.EXTRA_SUBJECT, "Help Me!");
+		intent.putExtra(Intent.EXTRA_TEXT, message);
+		startActivity(intent);
+	}
+
+	/**
+	 * Sends help SMS to contacts
+	 * 
+	 * @param msg
+	 *            the message to be sent
+	 * @param sendTo
+	 *            mobile number of recipient
+	 */
+	private void sendSMS(String msg, String sendTo) {
+		SmsManager smsMngr = SmsManager.getDefault();
+
+		ArrayList<String> chunkedMessages = smsMngr.divideMessage(msg);
+		for (String messageChunk : chunkedMessages)
+			smsMngr.sendTextMessage(sendTo, this.getString(R.string.app_name),
+					messageChunk, null, null);
+
+		mTts.setLanguage(locale);
+		mTts.speak("The following message has been sent: "
+				+ msg, TextToSpeech.QUEUE_FLUSH, null);
+	}
+
+	/**
+	 * Builds current location and reverse geocoded address
+	 * 
+	 * @return A String containing the current location + address
+	 */
+	private String getEmergencyLocation() {
+		StringBuffer locBuf = new StringBuffer();
+		Location currLoc = getCurrentLocation();
+		if (currLoc != null) {
+			Log.i(LOG_TAG, "Current  Location -> Lat: " + currLoc.getLatitude()
+					+ "Long: " + currLoc.getLongitude());
+			locBuf.append("I'm at Lat: " + currLoc.getLatitude() + " Long: "
+					+ currLoc.getLongitude() + "\n");
+		}
+
+		List<Address> addresses = resolveLocation(currLoc);
+		if (addresses != null && !addresses.isEmpty()) {
+			Address currentAddress = addresses.get(0);
+			if (currentAddress.getMaxAddressLineIndex() > 0) {
+				for (int i = 0; i < currentAddress.getMaxAddressLineIndex(); i++) {
+					locBuf.append(currentAddress.getAddressLine(i));
+					locBuf.append("\n");
+				}
+			} else {
+				if (currentAddress.getPostalCode() != null)
+					locBuf.append(currentAddress.getPostalCode());
+			}
+		}
+		return locBuf.toString();
+	}
+
+	/**
+	 * Gets last known location from the device
+	 * 
+	 * @return Location
+	 */
+	private Location getCurrentLocation() {
+		LocationManager locMngr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		Location currLoc = null;
+		currLoc = locMngr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		if (currLoc == null) {
+			currLoc = locMngr
+					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		}
+		return currLoc;
+	}
+
+	/**
+	 * Reverse geocoding of current location
+	 * 
+	 * @param currLoc
+	 *            current location
+	 * @return List address locations
+	 */
+	private List<Address> resolveLocation(Location currLoc) {
+		Geocoder gCoder = new Geocoder(getApplicationContext(), Locale
+				.getDefault());
+		try {
+			return gCoder.getFromLocation(currLoc.getLatitude(), currLoc
+					.getLongitude(), 1);
+		} catch (Exception e) {
+			Log.e(LOG_TAG,
+					"Could not resolve GeoLocation, here is what i know: "
+							+ e.getMessage());
+			return null;
+		}
+	}
+
+	/**
+	 * Starts the voice recognition activity from google
+	 */
+	private void startVoiceRecognitionActivity() {
+		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+				getLanguageModel());
+		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak help message!");
+		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, locale.toString());
+		startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+	}
+
+	/**
+	 * Returns the language model to be used with speech recognition
+	 * 
+	 * @return a constant indicating which language model is used
+	 * 
+	 * @TODO let user choose from settings in future.
+	 * 
+	 *       For now default: LANGUAGE_MODEL_WEB_SEARCH
+	 * 
+	 * */
+	private String getLanguageModel() {
+		return true ? RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH
+				: RecognizerIntent.LANGUAGE_MODEL_FREE_FORM;
+	}
+
+	/**
+	 * A class which represent a contact that has to be notified in emergency situations
+	 */
+	public static class HelperContact {
+		public String sms;
+		public String email;
+
+		public HelperContact(String sms, String email) {
+			this.sms = sms;
+			this.email = email;
+		}
+	}
 }

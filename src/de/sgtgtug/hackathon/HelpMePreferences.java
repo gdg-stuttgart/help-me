@@ -17,13 +17,15 @@ public class HelpMePreferences extends PreferenceActivity {
 
 	private PreferenceScreen createPreferenceHierarchy() {
 		// Root
-		PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
-		
+		PreferenceScreen root = getPreferenceManager().createPreferenceScreen(
+				this);
+
 		PreferenceCategory contactCategory = new PreferenceCategory(this);
 		contactCategory.setTitle(R.string.contacts_pref_cat_title);
 		root.addPreference(contactCategory);
-		
-		PreferenceScreen contacts = getPreferenceManager().createPreferenceScreen(this);
+
+		PreferenceScreen contacts = getPreferenceManager()
+				.createPreferenceScreen(this);
 		contacts.setIntent(new Intent(this, ContactManager.class));
 		contacts.setTitle(R.string.contacts_pref_title);
 		contacts.setSummary(R.string.contacts_pref_summary);

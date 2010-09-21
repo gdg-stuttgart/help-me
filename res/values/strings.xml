@@ -1,51 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, HelpME!</string>
-    <string name="app_name">HelpME</string>
-    <string name="test_sms">Send Message Test</string>
-    <string name="settings_title">Settings</string>
-    <string name="contacts_pref_cat_title">Contacts</string>
-    <string name="contacts_pref_title">Emergency Contacts</string>
-    <string name="contacts_pref_summary">Choose Contacts...</string>
-    
-    <!-- FaKods stuff -->
-    <string name="accountSpinnerLabel">Account</string>
-    <string name="doneContactButtonLabel">done...</string>
-    <string name="addContactTitle">Add Contact</string>
-    <string name="allAccounts">All Accounts</string>
-    <string name="contactCreationFailure">Contact creation failed, check logs.</string>
-    <string name="contactEmailLabel">Contact Email</string>
-    <string name="contactNameLabel">Contact Name</string>
-    <string name="contactPhoneLabel">Contact Phone</string>
-    <string name="save">Save</string>
-    <string name="selectAccountLabel">Select</string>
-    <string name="selectLabel">Select label</string>
-    <string name="showInvisible">Show Invisible Contacts (Only)</string>
-    <string name="targetAccountLabel">Target Account</string>
-    <string name="undefinedTypeLabel">(Undefined)</string>
-    
-    <!-- [e]lektrojung[e]'s stuff -->
-    <string name="preferences_headline">Preferences</string>
-    <string name="preferences_subheadline">Your personal data</string>
-    <string name="preferences_name">Name:</string>
-    <string name="preferences_sex">Your Name</string>
-    <string name="preferences_age">Your Age</string>
-    <string name="preferences_insurance">Your Insurance</string>
-    <string name="preferences_insurance_id">Your Insurance\'s I</string>
-    
-    <!-- Language Selection -->
-    <string name="language_selection">Select Language</string>
-    <string name="language_us_En">English (US)</string>
-    <string name="language_de">Germany</string>
-    <string name="language_fr">France</string>
+	<string name="hello">Hello World, HelpME!</string>
+	<string name="app_name">HelpME</string>
+	<string name="test_sms">Send Message Test</string>
+	<string name="settings_title">Settings</string>
+	<string name="about_title">About</string>
 
- 	<!-- Language Model -->
+	<string name="contacts_pref_cat_title">Contacts</string>
+	<string name="contacts_pref_title">Emergency Contacts</string>
+	<string name="contacts_pref_summary">Choose Contacts...</string>
+
+	<!-- FaKods stuff -->
+	<string name="accountSpinnerLabel">Account</string>
+	<string name="doneContactButtonLabel">done</string>
+	<string name="addContactTitle">Add Contact</string>
+	<string name="allAccounts">All Accounts</string>
+	<string name="contactCreationFailure">Contact creation failed, check logs.</string>
+	<string name="contactEmailLabel">Contact Email</string>
+	<string name="contactNameLabel">Contact Name</string>
+	<string name="contactPhoneLabel">Contact Phone</string>
+	<string name="save">Save</string>
+	<string name="selectAccountLabel">Select</string>
+	<string name="selectLabel">Select label</string>
+	<string name="showInvisible">Show Invisible Contacts (Only)</string>
+	<string name="targetAccountLabel">Target Account</string>
+	<string name="undefinedTypeLabel">(Undefined)</string>
+
+	<!-- [e]lektrojung[e]'s stuff -->
+	<string name="preferences_headline">Preferences</string>
+	<string name="preferences_subheadline">Your personal data</string>
+	<string name="preferences_name">Name:</string>
+	<string name="preferences_sex">Your Name</string>
+	<string name="preferences_age">Your Age</string>
+	<string name="preferences_insurance">Your Insurance</string>
+	<string name="preferences_insurance_id">Your Insurance\'s I</string>
+
+	<!-- Language Selection -->
+	<string name="language_selection">Select Language</string>
+	<string name="language_us_En">English (US)</string>
+	<string name="language_de">Germany</string>
+	<string name="language_fr">France</string>
+
+	<!-- Language Model -->
 	<string name="lang_model_selection">Language Model</string>
 	<string name="lang_model_free_form">Text Query (Free Form)</string>
 	<string name="lang_model_web_search">Web Search Query</string>
 
-    <!-- tts -->
-    <string name="tts_install">Install</string>
-    <string name="tts_cancel">Cancel</string>
-    <string name="trigger_stt_translate">Speak!</string>
+	<!-- tts -->
+	<string name="tts_install">Install</string>
+	<string name="tts_cancel">Cancel</string>
+	<string name="trigger_stt_translate">Speak!</string>
+
+	<!-- @russenreaktor -->
+	<string name="description_info">About</string>
+	<string name="description_preferences">Preferences</string>
+	<string name="description_logo">Help me</string>
+
+	<!-- preferences -->
+	<string name="personal_preferences">Personal Data</string>
+
+	<string name="user_name">Name</string>
+	<string name="title_user_name_preference">Name</string>
+	<string name="summary_user_name_preference"></string>
+	<string name="dialog_user_name_preference">Name</string>
+
+	<string name="user_sex">Sex</string>
+	<string name="title_user_sex_preference">Sex</string>
+	<string name="summary_user_sex_preference"></string>
+	<string name="dialog_title_user_sex_list_preference">Sex</string>
+
+	<string name="user_age">Age</string>
+	<string name="title_user_age_preference">Age</string>
+	<string name="summary_user_age_preference"></string>
+	<string name="dialog_user_age_preference">Age</string>
+
+	<string name="user_security_nr">Insurance Number</string>
+	<string name="title_user_security_nr_preference">Insurance Number</string>
+	<string name="summary_user_security_nr_preference"></string>
+	<string name="dialog_user_security_nr_preference">Insurance Number</string>
+	
+	<string name="emergency_contacts_preferences">My Emergency Contacts</string>
+
+
+	<string name="contacts">add contacts</string>
+	<string name="title_add_contacts_preference">add contacts</string>
+	<string name="summary_add_contacts_preference"></string>
+	<string name="dialog_add_contacts_preference">add contacts</string>
+
+
+
 </resources>

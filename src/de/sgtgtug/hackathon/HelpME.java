@@ -10,6 +10,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.location.Address;
@@ -25,8 +26,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class HelpME extends Activity implements OnInitListener {
 	private static String LOG_TAG = "HelpME";
@@ -35,63 +39,96 @@ public class HelpME extends Activity implements OnInitListener {
 	private static final int TTS_CHECK_CODE = 0x001;
 	private static final int DIALOG_NO_TTS = 0x002;
 
+	private static final int MENU_SETUP = 1;
+	private static final int MENU_ABOUT = 2;
+
 	private boolean STT_AVAILABLE = false;
 	private boolean MSG_TYPE_SMS = true;
 	private boolean MSG_TYPE_EMAIL = false;
 
-	private Locale locale;
+	private Locale locale = Locale.US;
 	private TextToSpeech mTts = null;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
 
-		locale = Locale.US;
+		/*
+		 * hide title and force portrait mode
+		 */
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		// ---change to landscape mode only---
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+		setContentView(R.layout.main);
 
 		checkforSpeechServices();
 
-		ImageView action_btn = (ImageView) findViewById(R.id.action_btn);
-		action_btn.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				if (STT_AVAILABLE) {
-					mTts.speak("Speak your help message now"
-							, TextToSpeech.QUEUE_FLUSH, null);
-					
-					//synchronous TTS
-					while (mTts.isSpeaking()) {	}
-					startVoiceRecognitionActivity();
-				}
-				else
-					requestHelp(null);
-			}
-		});
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, Menu.FIRST, Menu.NONE, R.string.settings_title);
+
+		menu.clear();
+		menu.add(0, MENU_SETUP, 0, R.string.settings_title).setIcon(
+				android.R.drawable.ic_menu_preferences);
+		menu.add(0, MENU_ABOUT, 0, R.string.about_title).setIcon(
+				android.R.drawable.ic_menu_info_details);
+
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case Menu.FIRST:
-			startActivity(new Intent(this, HelpMePreferences.class));
+		case MENU_SETUP:
+			onSetupClick(new View(getApplicationContext()));
 			break;
+		case MENU_ABOUT:
+			onAboutClick(new View(getApplicationContext()));
+			break;
+
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	public void onSetupClick(View v) {
+		startActivity(new Intent(getApplicationContext(),
+				HelpMePreferences.class));
+
+	}
+
+	public void onAboutClick(View v) {
+		/*
+		 * TODO: add About dialog
+		 */
+		Toast.makeText(getApplicationContext(),
+				"TODO: Add some application info", Toast.LENGTH_SHORT).show();
+
+	}
+
+	public void onButtonHelpClick(View v) {
+		if (STT_AVAILABLE) {
+			mTts.speak("Speak your help message now", TextToSpeech.QUEUE_FLUSH,
+					null);
+
+			// synchronous TTS
+			while (mTts.isSpeaking()) {
+			}
+			startVoiceRecognitionActivity();
+		} else {
+			requestHelp(null);
+		}
 	}
 
 	protected Dialog onCreateDialog(final int pDialogID) {
 		switch (pDialogID) {
 		case DIALOG_NO_TTS:
-			return new AlertDialog.Builder(this).setTitle("STT-Error").setIcon(
-					android.R.drawable.ic_dialog_alert).setMessage(
-					"Sorry, tts service not installed...fetch()?")
+			return new AlertDialog.Builder(this)
+					.setTitle("STT-Error")
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setMessage("Sorry, tts service not installed...fetch()?")
 					.setNegativeButton(R.string.tts_cancel,
 							new Dialog.OnClickListener() {
 								public void onClick(
@@ -99,7 +136,8 @@ public class HelpME extends Activity implements OnInitListener {
 										final int pWhich) {
 									dismissDialog(pWhich);
 								}
-							}).setPositiveButton(R.string.tts_install,
+							})
+					.setPositiveButton(R.string.tts_install,
 							new Dialog.OnClickListener() {
 								public void onClick(
 										final DialogInterface pDialog,
@@ -248,8 +286,8 @@ public class HelpME extends Activity implements OnInitListener {
 			smsMngr.sendTextMessage(sendTo, this.getString(R.string.app_name),
 					messageChunk, null, null);
 
-		mTts.speak("The following message has been sent: "
-				+ msg, TextToSpeech.QUEUE_FLUSH, null);
+		mTts.speak("The following message has been sent: " + msg,
+				TextToSpeech.QUEUE_FLUSH, null);
 	}
 
 	/**
@@ -307,11 +345,11 @@ public class HelpME extends Activity implements OnInitListener {
 	 * @return List address locations
 	 */
 	private List<Address> resolveLocation(Location currLoc) {
-		Geocoder gCoder = new Geocoder(getApplicationContext(), Locale
-				.getDefault());
+		Geocoder gCoder = new Geocoder(getApplicationContext(),
+				Locale.getDefault());
 		try {
-			return gCoder.getFromLocation(currLoc.getLatitude(), currLoc
-					.getLongitude(), 1);
+			return gCoder.getFromLocation(currLoc.getLatitude(),
+					currLoc.getLongitude(), 1);
 		} catch (Exception e) {
 			Log.e(LOG_TAG,
 					"Could not resolve GeoLocation, here is what i know: "
@@ -348,7 +386,8 @@ public class HelpME extends Activity implements OnInitListener {
 	}
 
 	/**
-	 * A class which represent a contact that has to be notified in emergency situations
+	 * A class which represent a contact that has to be notified in emergency
+	 * situations
 	 */
 	public static class HelperContact {
 		public String sms;

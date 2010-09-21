@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<PreferenceCategory android:title="@string/personal_preferences">
+
+		<EditTextPreference android:key="user_name"
+			android:title="@string/title_user_name_preference"
+			android:summary="@string/summary_user_name_preference"
+			android:dialogTitle="@string/dialog_user_name_preference" />
+
+		<ListPreference android:key="user_sex"
+			android:title="@string/title_user_sex_preference"
+			android:summary="@string/summary_user_sex_preference"
+			android:entries="@array/user_sex_preference"
+			android:entryValues="@array/entryvalues_user_sex_list_preference"
+			android:dialogTitle="@string/dialog_title_user_sex_list_preference" />
+
+		<EditTextPreference android:key="user_age"
+			android:title="@string/title_user_age_preference"
+			android:summary="@string/summary_user_age_preference"
+			android:dialogTitle="@string/dialog_user_age_preference" />
+
+		<EditTextPreference android:key="user_security_nr"
+			android:title="@string/title_user_security_nr_preference"
+			android:summary="@string/summary_user_security_nr_preference"
+			android:dialogTitle="@string/dialog_user_security_nr_preference" />
+
+	</PreferenceCategory>
+	
+	<PreferenceCategory android:title="@string/emergency_contacts_preferences">
+
+		<PreferenceScreen android:key="contacts"
+			android:title="@string/title_add_contacts_preference"
+			android:summary="@string/summary_add_contacts_preference">
+
+		</PreferenceScreen>
+
+	</PreferenceCategory>
+
+</PreferenceScreen>

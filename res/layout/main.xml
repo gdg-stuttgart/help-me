@@ -1,47 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    > 
-    <LinearLayout
-    	android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
-   		android:orientation="horizontal">    
-	    <LinearLayout
-    	android:layout_width="wrap_content"
-    	android:layout_height="fill_parent">
-		    <TextView
-		    	android:layout_width="wrap_content"
-		    	android:layout_height="wrap_content"
-		    	android:text="@string/app_name"
-		    	android:textSize="30dip"
-		    	android:layout_gravity="center_vertical"/>
-    	</LinearLayout>
-	    <LinearLayout
-    	android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
-   		android:orientation="horizontal"
-   		android:gravity="right">
-		    <ImageView
-				android:src="@drawable/ic_menu_preferences"
-		    	android:layout_width="wrap_content"
-		    	android:layout_height="wrap_content"/>
-		   <ImageView
-		    	android:src="@drawable/ic_menu_info_details"
-		    	android:layout_width="wrap_content"
-		    	android:layout_height="wrap_content"/>
-		</LinearLayout>
-   	</LinearLayout>
-	<LinearLayout
-		android:layout_height="fill_parent"
-		android:layout_width="wrap_content"
-		android:layout_gravity="center">
-		<ImageView
-			android:src="@drawable/btn_action"
-			android:id="@+id/action_btn"
-		   	android:layout_width="wrap_content"
-		   	android:layout_height="wrap_content"
-		   	android:layout_gravity="center_vertical"/> 
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<LinearLayout style="@style/TitleBar">
+
+
+		<ImageView style="@style/TitleBarLogo"
+			android:contentDescription="@string/description_logo" android:src="@drawable/title_logo" />
+		<View style="@style/TitleBarSpring" />
+		
+		<ImageView style="@style/TitleBarSeparator" />
+		
+		<ImageButton style="@style/TitleBarAction"
+			android:contentDescription="@string/description_preferences"
+			android:src="@drawable/ic_menu_preferences" android:onClick="onSetupClick" />
+
+		<ImageView style="@style/TitleBarSeparator" />
+
+		<ImageButton style="@style/TitleBarAction"
+			android:contentDescription="@string/description_info" android:src="@drawable/ic_menu_info_details"
+			android:onClick="onAboutClick" />
 	</LinearLayout>
+
+	<RelativeLayout android:id="@+id/RelativeLayout01" 
+	android:layout_height="fill_parent" android:layout_width="fill_parent">
+	<ImageButton style="@style/HelpAction" 
+		android:contentDescription="@string/description_info" 
+		android:src="@drawable/btn_action" 
+		android:onClick="onButtonHelpClick" 
+		android:layout_centerHorizontal="true" 
+		android:layout_centerVertical="true"/>
+
+	</RelativeLayout>
 </LinearLayout>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="user_sex_preference">
+		<item>Male</item>
+		<item>Female</item>
+	</string-array>
+
+	<string-array name="entryvalues_user_sex_list_preference">
+		<item>1</item>
+		<item>0</item>
+	</string-array>
+</resources>

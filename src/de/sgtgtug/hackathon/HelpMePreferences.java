@@ -5,12 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.view.Menu;
-import android.widget.Toast;
 
 public class HelpMePreferences extends PreferenceActivity implements
 		OnPreferenceChangeListener {

@@ -3,8 +3,6 @@ package de.sgtgtug.hackathon;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.sgtgtug.hackathon.HelpME.HelperContact;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
@@ -12,6 +10,7 @@ import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import de.sgtgtug.hackathon.HelpME.HelperContact;
 
 public class PreferencesUtil {
 

@@ -1,4 +1,4 @@
-package de.sgtgtug.hackathon;
+package de.sgtgtug.android.hackathon.helpme;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

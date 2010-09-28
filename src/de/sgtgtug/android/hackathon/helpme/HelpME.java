@@ -1,4 +1,4 @@
-package de.sgtgtug.hackathon;
+package de.sgtgtug.android.hackathon.helpme;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -38,6 +38,7 @@
 	<string name="preferences_insurance">Your Insurance</string>
 	<string name="preferences_insurance_id">Your Insurance\'s I</string>
 
+	<!-- @onlythoughtwork 's stuff -->
 	<!-- Language Selection -->
 	<string name="language_selection">Select Language</string>
 	<string name="language_us_En">English (US)</string>
@@ -53,6 +54,10 @@
 	<string name="tts_install">Install</string>
 	<string name="tts_cancel">Cancel</string>
 	<string name="trigger_stt_translate">Speak!</string>
+	<string name="tts_helpMe">Help Me, </string>
+	<string name="tts_message">Message: </string>
+	<string name="tts_message_sent">The following message has been sent: </string>
+	<string name="tts_iam_at">I\'m at: </string>
 
 	<!-- @russenreaktor -->
 	<string name="description_info">About</string>

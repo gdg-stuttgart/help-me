@@ -244,9 +244,9 @@ public class HelpME extends Activity implements OnInitListener {
 	private String createHelpMsg(String voiceMsg) {
 		StringBuffer msgBfr = new StringBuffer();
 		/** @TODO Read general health settings and append to buffer */
-		msgBfr.append("Help Me, \n");
+		msgBfr.append(getString(R.string.tts_helpMe) + "\n");
 		msgBfr.append(getEmergencyLocation());
-		msgBfr.append("Message: " + voiceMsg + "\n");
+		msgBfr.append(R.string.tts_helpMe + voiceMsg + "\n");
 		return msgBfr.toString();
 	}
 
@@ -282,8 +282,7 @@ public class HelpME extends Activity implements OnInitListener {
 		for (String messageChunk : chunkedMessages)
 //			smsMngr.sendTextMessage(sendTo, this.getString(R.string.app_name),
 //					messageChunk, null, null);
-
-		mTts.speak("The following message has been sent: " + msg,
+		mTts.speak(getString(R.string.tts_message_sent) + msg,
 				TextToSpeech.QUEUE_FLUSH, null);
 	}
 
@@ -298,7 +297,7 @@ public class HelpME extends Activity implements OnInitListener {
 		if (currLoc != null) {
 			Log.i(LOG_TAG, "Current  Location -> Lat: " + currLoc.getLatitude()
 					+ "Long: " + currLoc.getLongitude());
-			locBuf.append("I'm at Lat: " + currLoc.getLatitude() + " Long: "
+			locBuf.append(R.string.tts_iam_at + currLoc.getLatitude() + " Long: "
 					+ currLoc.getLongitude() + "\n");
 		}
 

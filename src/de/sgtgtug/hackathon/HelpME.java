@@ -245,8 +245,8 @@ public class HelpME extends Activity implements OnInitListener {
 
 		ArrayList<String> chunkedMessages = smsMngr.divideMessage(msg);
 		for (String messageChunk : chunkedMessages)
-			smsMngr.sendTextMessage(sendTo, this.getString(R.string.app_name),
-					messageChunk, null, null);
+//			smsMngr.sendTextMessage(sendTo, this.getString(R.string.app_name),
+//					messageChunk, null, null);
 
 		mTts.speak("The following message has been sent: "
 				+ msg, TextToSpeech.QUEUE_FLUSH, null);

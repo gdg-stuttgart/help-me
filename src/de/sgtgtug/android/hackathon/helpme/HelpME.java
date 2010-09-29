@@ -283,7 +283,7 @@ public class HelpME extends Activity implements OnInitListener {
 		 * TODO: remove for production mode
 		 */
 		Toast.makeText(getApplicationContext(),
-				"TODO: Email triggerred (remove in production mode)", Toast.LENGTH_SHORT).show();
+				"TODO: Email triggered remove in prod mode: )" + message, Toast.LENGTH_LONG).show();
 		
 		final Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("plain/text");
@@ -311,7 +311,7 @@ public class HelpME extends Activity implements OnInitListener {
 		 * smsMngr.sendTextMessage(sendTo, this.getString(R.string.app_name),messageChunk, null, null);
 		 */
 		Toast.makeText(getApplicationContext(),
-				"TODO: Uncomment SMS sending in production mode", Toast.LENGTH_SHORT).show();
+				"SMS send, remove in prod. mode msg: " + messageChunk, Toast.LENGTH_LONG).show();
 	}
 
 	/**

@@ -39,13 +39,11 @@
 
 	<!-- @onlythoughtwork 's stuff -->
 	<!-- Language Selection -->
-	<string name="language_selection">Select Language</string>
 	<string name="language_us_En">English (US)</string>
 	<string name="language_de">Germany</string>
 	<string name="language_fr">France</string>
 
 	<!-- Language Model -->
-	<string name="lang_model_selection">Language Model</string>
 	<string name="lang_model_free_form">Text Query (Free Form)</string>
 	<string name="lang_model_web_search">Web Search Query</string>
 
@@ -104,11 +102,21 @@
 	<string name="summary_email_enabled_preference">Email enabled</string>
 	<string name="summary_email_disabled_preference">Email disabled</string>
 	
-	<string name="title_speech_services_preference">Use Speech Services</string>
+	<string name="additional_settings">Additional Settings</string>
+	
+	<string name="title_use_speech_services_preference">Use Speech Services</string>
 	<string name="summary_speech_services_enabled_preference">Speech services enabled</string>
 	<string name="summary_speech_services_disabled_preference">Speech services disabled</string>
 	
-
+	<string name="title_speech_services_preference">Speech Services</string>
+	<string name="summary_speech_services_preference">Customize TTS/STT Settings</string>
+	
+	<string name="speech_services_supported_locales">Locales</string>
+	<string name="speech_services_choose_locale">Current locale</string>
+	
+	<string name="title_speech_services_language_model">Language models</string>
+	<string name="summary_speech_services_choose_language_model">Current language model</string>
+	
 	<string name="contacts">add contacts</string>
 	<string name="title_add_contacts_preference">add contacts</string>
 	<string name="summary_add_contacts_preference"></string>

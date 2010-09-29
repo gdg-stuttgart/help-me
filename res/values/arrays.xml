@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<!-- @onlythoughtwork 's stuff -->
+	<!-- Language Selection -->
+	<string-array name="tts_stt_locales_preference">
+		<item>@string/language_us_En</item>
+		<item>@string/language_de</item>
+		<item>@string/language_fr</item>
+	</string-array>
+
+	<string-array name="entryvalues_tts_stt_locales_preference">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+	</string-array>
+	
+	<string-array name="tts_stt_language_model">
+		<item>@string/lang_model_free_form</item>
+		<item>@string/lang_model_web_search</item>
+	</string-array>
+
+	<string-array name="entryvalues_tts_stt_language_model">
+		<item>0</item>
+		<item>1</item>
+	</string-array>
+	
+	<!-- @russenreaktor -->
 	<string-array name="user_sex_preference">
 		<item>Male</item>
 		<item>Female</item>

@@ -19,11 +19,14 @@ public class HelpMePreferences extends PreferenceActivity implements
 	public static final String PREFERENCE_USER_AGE = "user_age";
 	public static final String PREFERENCE_SECURITY_NR = "user_security_nr";
 
-	//Notifications
-	public static final String PREFERENCE_USE_SPEECH_SERVICES = "use_tts_stt";
+	// Notifications
 	public static final String PREFERENCE_USE_SMS_MSG = "use_sms";
 	public static final String PREFERENCE_USE_EMAIL_MSG = "use_email";
 
+	// Speech services
+	public static final String PREFERENCE_USE_SPEECH_SERVICES = "use_tts_stt";
+	public static final String PREFERENCE_SPEECH_SERVICES_LOCALES = "locales_tts_stt";
+	public static final String PREFERENCE_SPEECH_SERVICES_LANGUAGE_MODEL = "language_model_tts_stt";
 
 	protected static final int ACTIVITY_RESULT_CONTACTS = 2;
 
@@ -45,9 +48,13 @@ public class HelpMePreferences extends PreferenceActivity implements
 		findPreference(HelpMePreferences.PREFERENCE_USE_SPEECH_SERVICES)
 				.setOnPreferenceChangeListener(this);
 		findPreference(HelpMePreferences.PREFERENCE_USE_SMS_MSG)
-		.setOnPreferenceChangeListener(this);
+				.setOnPreferenceChangeListener(this);
 		findPreference(HelpMePreferences.PREFERENCE_USE_EMAIL_MSG)
-		.setOnPreferenceChangeListener(this);
+				.setOnPreferenceChangeListener(this);
+		findPreference(HelpMePreferences.PREFERENCE_SPEECH_SERVICES_LOCALES)
+				.setOnPreferenceChangeListener(this);
+		findPreference(HelpMePreferences.PREFERENCE_SPEECH_SERVICES_LANGUAGE_MODEL)
+				.setOnPreferenceChangeListener(this);
 
 		configurePreferences();
 	}
@@ -61,7 +68,6 @@ public class HelpMePreferences extends PreferenceActivity implements
 		shareContactsPreference.setSummary(R.string.contacts_pref_summary);
 
 		populateData();
-
 	}
 
 	// @Override
@@ -113,23 +119,67 @@ public class HelpMePreferences extends PreferenceActivity implements
 		findPreference(HelpMePreferences.PREFERENCE_SECURITY_NR).setSummary(
 				sharedPrefs.getString(HelpMePreferences.PREFERENCE_SECURITY_NR,
 						getString(R.string.preferences_insurance_id)));
-		
-		
-		findPreference(HelpMePreferences.PREFERENCE_USE_SPEECH_SERVICES).setSummary(
-				sharedPrefs.getBoolean(HelpMePreferences.PREFERENCE_USE_SPEECH_SERVICES, true)
-				? getString(R.string.summary_speech_services_enabled_preference)
-				: getString(R.string.summary_speech_services_disabled_preference));
-		
-		findPreference(HelpMePreferences.PREFERENCE_USE_SMS_MSG).setSummary(
-				sharedPrefs.getBoolean(HelpMePreferences.PREFERENCE_USE_SMS_MSG, true)
-				? getString(R.string.summary_sms_enabled_preference)
-				: getString(R.string.summary_sms_disabled_preference));
-		
-		findPreference(HelpMePreferences.PREFERENCE_USE_EMAIL_MSG).setSummary(
-				sharedPrefs.getBoolean(HelpMePreferences.PREFERENCE_USE_EMAIL_MSG, true)
-				? getString(R.string.summary_email_enabled_preference)
-				: getString(R.string.summary_email_disabled_preference));
-		
+
+		findPreference(HelpMePreferences.PREFERENCE_USE_SPEECH_SERVICES)
+				.setSummary(
+						sharedPrefs
+								.getBoolean(
+										HelpMePreferences.PREFERENCE_USE_SPEECH_SERVICES,
+										true) ? getString(R.string.summary_speech_services_enabled_preference)
+								: getString(R.string.summary_speech_services_disabled_preference));
+
+		findPreference(HelpMePreferences.PREFERENCE_USE_SMS_MSG)
+				.setSummary(
+						sharedPrefs.getBoolean(
+								HelpMePreferences.PREFERENCE_USE_SMS_MSG, true) ? getString(R.string.summary_sms_enabled_preference)
+								: getString(R.string.summary_sms_disabled_preference));
+
+		findPreference(HelpMePreferences.PREFERENCE_USE_EMAIL_MSG)
+				.setSummary(
+						sharedPrefs.getBoolean(
+								HelpMePreferences.PREFERENCE_USE_EMAIL_MSG,
+								true) ? getString(R.string.summary_email_enabled_preference)
+								: getString(R.string.summary_email_disabled_preference));
+
+		StringBuffer selectedLocale = new StringBuffer(
+				getString(R.string.speech_services_choose_locale) + " ");
+
+		switch (new Integer(sharedPrefs.getString(
+				HelpMePreferences.PREFERENCE_SPEECH_SERVICES_LOCALES, "0"))) {
+		case 0:
+			selectedLocale.append(getString(R.string.language_us_En));
+			break;
+		case 1:
+			selectedLocale.append(getString(R.string.language_de));
+			break;
+		case 2:
+			selectedLocale.append(getString(R.string.language_fr));
+			break;
+		}
+
+		findPreference(HelpMePreferences.PREFERENCE_SPEECH_SERVICES_LOCALES)
+				.setSummary(selectedLocale.toString());
+
+		StringBuffer selectedLanguageModel = new StringBuffer(
+				getString(R.string.summary_speech_services_choose_language_model)
+						+ " ");
+
+		switch (new Integer(sharedPrefs.getString(
+				HelpMePreferences.PREFERENCE_SPEECH_SERVICES_LANGUAGE_MODEL,
+				"0"))) {
+		case 0:
+			selectedLanguageModel
+					.append(getString(R.string.lang_model_free_form));
+			break;
+		case 1:
+			selectedLanguageModel
+					.append(getString(R.string.lang_model_web_search));
+			break;
+		}
+
+		findPreference(
+				HelpMePreferences.PREFERENCE_SPEECH_SERVICES_LANGUAGE_MODEL)
+				.setSummary(selectedLanguageModel.toString());
 	}
 
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -169,26 +219,64 @@ public class HelpMePreferences extends PreferenceActivity implements
 		}
 
 		if (preference.getKey().equals(PREFERENCE_USE_SPEECH_SERVICES)) {
-			preference.setSummary(((Boolean) newValue)
-								  ? getString(R.string.summary_speech_services_enabled_preference)
-							      : getString(R.string.summary_speech_services_disabled_preference));
-			return true;
-		}
-		
-		if (preference.getKey().equals(PREFERENCE_USE_SMS_MSG)) {
-			preference.setSummary(((Boolean) newValue)
-								  ? getString(R.string.summary_sms_enabled_preference)
-							      : getString(R.string.summary_sms_disabled_preference));
-			return true;
-		}
-		
-		if (preference.getKey().equals(PREFERENCE_USE_EMAIL_MSG)) {
-			preference.setSummary(((Boolean) newValue)
-								  ? getString(R.string.summary_email_enabled_preference)
-							      : getString(R.string.summary_email_disabled_preference));
+			preference
+					.setSummary(((Boolean) newValue) ? getString(R.string.summary_speech_services_enabled_preference)
+							: getString(R.string.summary_speech_services_disabled_preference));
 			return true;
 		}
 
+		if (preference.getKey().equals(PREFERENCE_USE_SMS_MSG)) {
+			preference
+					.setSummary(((Boolean) newValue) ? getString(R.string.summary_sms_enabled_preference)
+							: getString(R.string.summary_sms_disabled_preference));
+			return true;
+		}
+
+		if (preference.getKey().equals(PREFERENCE_USE_EMAIL_MSG)) {
+			preference
+					.setSummary(((Boolean) newValue) ? getString(R.string.summary_email_enabled_preference)
+							: getString(R.string.summary_email_disabled_preference));
+			return true;
+		}
+
+		if (preference.getKey().equals(PREFERENCE_SPEECH_SERVICES_LOCALES)) {
+			StringBuffer selectedLocale = new StringBuffer(
+					getString(R.string.speech_services_choose_locale) + " ");
+
+			switch (new Integer(newValue.toString())) {
+			case 0:
+				selectedLocale.append(getString(R.string.language_us_En));
+				break;
+			case 1:
+				selectedLocale.append(getString(R.string.language_de));
+				break;
+			case 2:
+				selectedLocale.append(getString(R.string.language_fr));
+				break;
+			}
+			preference.setSummary(selectedLocale.toString());
+			return true;
+		}
+
+		if (preference.getKey().equals(
+				PREFERENCE_SPEECH_SERVICES_LANGUAGE_MODEL)) {
+			StringBuffer selectedLangModel = new StringBuffer(
+					getString(R.string.summary_speech_services_choose_language_model)
+							+ " ");
+
+			switch (new Integer(newValue.toString())) {
+			case 0:
+				selectedLangModel
+						.append(getString(R.string.lang_model_free_form));
+				break;
+			case 1:
+				selectedLangModel
+						.append(getString(R.string.lang_model_web_search));
+				break;
+			}
+			preference.setSummary(selectedLangModel.toString());
+			return true;
+		}
 		return false;
 	}
 }

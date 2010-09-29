@@ -36,8 +36,6 @@ import android.widget.Toast;
 public class HelpME extends Activity implements OnInitListener, OnUtteranceCompletedListener {
 	private static String LOG_TAG = "HelpME";
 	
-	private static final String TTS_UTTERANCE_ID_FINAL_HELP_MSG = "text_after_help_msg";
-	private static final String TTS_UTTERANCE_ID_BEFORE_HELP_MSG = "text_before_help_msg";
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 0x000;
 	private static final int TTS_CHECK_CODE = 0x001;
 	private static final int DIALOG_NO_TTS = 0x002;
@@ -45,14 +43,16 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 
 	private static final int MENU_SETUP = 0x004;
 	private static final int MENU_ABOUT = 0x005;
-
+	
+	private static final String TTS_UTTERANCE_ID_FINAL_HELP_MSG = "text_after_help_msg";
+	private static final String TTS_UTTERANCE_ID_BEFORE_HELP_MSG = "text_before_help_msg";
 	
 	private boolean USE_SPEECH_SERVICES;
 	private boolean USE_SMS_MSG;
 	private boolean USE_EMAIL_MSG;
 	private boolean STT_AVAILABLE = false;
 
-	private Locale locale = Locale.US;
+	private Locale locale;
 	private TextToSpeech mTts = null;
 
 	private SharedPreferences sharedPrefs;
@@ -204,6 +204,22 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 		super.onDestroy();
 	}
 	
+	private Locale getLanguageAsBCP47() {
+		
+		Integer prefsLocale = new Integer(sharedPrefs.getString(
+				HelpMePreferences.PREFERENCE_SPEECH_SERVICES_LOCALES, "-1"));
+		switch (prefsLocale) {
+		case 0:
+			return Locale.US;
+		case 1:
+			return Locale.GERMANY;
+		case 2:
+			return Locale.FRANCE;
+		default:
+			return Locale.US;
+		}
+    }
+	
 	/**
 	 * Called when tts engine finished initialization
 	 * 
@@ -211,7 +227,12 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 	 */
 	public void onInit(int status) {
 		if(status==TextToSpeech.SUCCESS){
-			mTts.setLanguage(locale);
+			locale = getLanguageAsBCP47();
+			if(mTts.isLanguageAvailable(locale) == TextToSpeech.LANG_COUNTRY_AVAILABLE) 
+				mTts.setLanguage(locale);
+			else
+				mTts.setLanguage(Locale.getDefault());
+			
 			//set UtteranceCompleted to get notified when TTS speaking finishes
 			mTts.setOnUtteranceCompletedListener(this);
 		}
@@ -221,7 +242,7 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 	
 	/**
 	 * Implements OnUtteranceCompletedListener Interface.
-	 * Fires when an utterance is complete.
+	 * Fires when an utterance is complete (TTS speaking finished).
 	 * 
 	 * @param String utteranceId ID which was passed to speak() method...
 	 */
@@ -449,7 +470,9 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 	 * 
 	 * */
 	private String getLanguageModel() {
-		return true ? RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH
+		String prefsLocale = sharedPrefs.getString(
+				HelpMePreferences.PREFERENCE_SPEECH_SERVICES_LOCALES, "0");
+		return prefsLocale.equals("1") ? RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH
 				: RecognizerIntent.LANGUAGE_MODEL_FREE_FORM;
 	}
 

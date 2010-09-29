@@ -110,7 +110,6 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 	public void onSetupClick(View v) {
 		startActivity(new Intent(getApplicationContext(),
 				HelpMePreferences.class));
-
 	}
 
 	public void onAboutClick(View v) {
@@ -123,10 +122,7 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 
 	public void onButtonHelpClick(View v) {
 		if (USE_SPEECH_SERVICES && STT_AVAILABLE) {
-			HashMap<String, String> ttsParams = new HashMap<String, String>();
-			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, TTS_UTTERANCE_ID_BEFORE_HELP_MSG);
-			mTts.speak(getString(R.string.tts_speak_hlp_msg_now), TextToSpeech.QUEUE_FLUSH,
-					ttsParams);
+			speak(getString(R.string.tts_speak_hlp_msg_now), TTS_UTTERANCE_ID_BEFORE_HELP_MSG);
 		} else {
 			requestHelp(null);
 		}
@@ -227,17 +223,29 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 	 */
 	public void onInit(int status) {
 		if(status==TextToSpeech.SUCCESS){
-			locale = getLanguageAsBCP47();
-			if(mTts.isLanguageAvailable(locale) == TextToSpeech.LANG_COUNTRY_AVAILABLE) 
-				mTts.setLanguage(locale);
-			else
-				mTts.setLanguage(Locale.getDefault());
+			setCurrentTTSLocale();
 			
 			//set UtteranceCompleted to get notified when TTS speaking finishes
 			mTts.setOnUtteranceCompletedListener(this);
 		}
 		else if(status==TextToSpeech.ERROR)
 			  mTts.shutdown();
+	}
+
+	private void setCurrentTTSLocale() {
+		locale = getLanguageAsBCP47();
+		if(mTts.isLanguageAvailable(locale) == TextToSpeech.LANG_COUNTRY_AVAILABLE) 
+			mTts.setLanguage(locale);
+		else
+			mTts.setLanguage(Locale.getDefault());
+	}
+	
+	private void speak(String text, String utteranceID) {
+		setCurrentTTSLocale();
+		HashMap<String, String> ttsParams = new HashMap<String, String>();
+		ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, utteranceID);
+		mTts.speak(text, TextToSpeech.QUEUE_FLUSH,
+				ttsParams);
 	}
 	
 	/**
@@ -290,11 +298,7 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 		sendHelpMsgs(testContact, helpMsg);
 		
 		if(USE_SPEECH_SERVICES) {
-			HashMap<String, String> ttsParams = new HashMap<String, String>();
-			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, TTS_UTTERANCE_ID_FINAL_HELP_MSG);
-			
-			mTts.speak(getString(R.string.tts_message_sent) + helpMsg,
-					TextToSpeech.QUEUE_FLUSH, ttsParams);
+			speak(getString(R.string.tts_message_sent) + helpMsg, TTS_UTTERANCE_ID_FINAL_HELP_MSG);
 			showDialog(DIALOG_ABORT_TTS);
 		}
 	}		

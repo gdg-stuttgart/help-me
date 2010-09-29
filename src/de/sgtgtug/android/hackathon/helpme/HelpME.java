@@ -213,7 +213,7 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 		if(status==TextToSpeech.SUCCESS){
 			mTts.setLanguage(locale);
 			//set UtteranceCompleted to get notified when TTS speaking finishes
-			int code = mTts.setOnUtteranceCompletedListener(this);
+			mTts.setOnUtteranceCompletedListener(this);
 		}
 		else if(status==TextToSpeech.ERROR)
 			  mTts.shutdown();

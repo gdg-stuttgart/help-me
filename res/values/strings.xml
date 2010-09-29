@@ -62,6 +62,7 @@
 	<string name="tts_message_sent">The following message has been sent: </string>
 	<string name="tts_iam_at">I\'m at: </string>
 	<string name="tts_speak_hlp_msg_now_dialog">Speak help message!</string>
+	<string name="tts_speak_hlp_msg_now">Speak your help message now</string>
 	
 	<!-- @russenreaktor -->
 	<string name="description_info">About</string>

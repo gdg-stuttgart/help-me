@@ -1,6 +1,7 @@
 package de.sgtgtug.android.hackathon.helpme;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,6 +24,7 @@ import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
+import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Menu;
@@ -31,15 +33,19 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
-public class HelpME extends Activity implements OnInitListener {
+public class HelpME extends Activity implements OnInitListener, OnUtteranceCompletedListener {
 	private static String LOG_TAG = "HelpME";
-
+	
+	private static final String TTS_UTTERANCE_ID_FINAL_HELP_MSG = "text_after_help_msg";
+	private static final String TTS_UTTERANCE_ID_BEFORE_HELP_MSG = "text_before_help_msg";
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 0x000;
 	private static final int TTS_CHECK_CODE = 0x001;
 	private static final int DIALOG_NO_TTS = 0x002;
+	private static final int DIALOG_ABORT_TTS = 0x003;
 
-	private static final int MENU_SETUP = 0x003;
-	private static final int MENU_ABOUT = 0x004;
+	private static final int MENU_SETUP = 0x004;
+	private static final int MENU_ABOUT = 0x005;
+
 	
 	private boolean USE_SPEECH_SERVICES;
 	private boolean USE_SMS_MSG;
@@ -113,18 +119,14 @@ public class HelpME extends Activity implements OnInitListener {
 		 */
 		Toast.makeText(getApplicationContext(),
 				"TODO: Add some application info", Toast.LENGTH_SHORT).show();
-
 	}
 
 	public void onButtonHelpClick(View v) {
 		if (USE_SPEECH_SERVICES && STT_AVAILABLE) {
-			mTts.speak("Speak your help message now", TextToSpeech.QUEUE_FLUSH,
-					null);
-
-			// synchronous TTS
-			while (mTts.isSpeaking()) {
-			}
-			startVoiceRecognitionActivity();
+			HashMap<String, String> ttsParams = new HashMap<String, String>();
+			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, TTS_UTTERANCE_ID_BEFORE_HELP_MSG);
+			mTts.speak(getString(R.string.tts_speak_hlp_msg_now), TextToSpeech.QUEUE_FLUSH,
+					ttsParams);
 		} else {
 			requestHelp(null);
 		}
@@ -156,6 +158,19 @@ public class HelpME extends Activity implements OnInitListener {
 									startActivity(installIntent);
 								}
 							}).create();
+		case DIALOG_ABORT_TTS:
+			return new AlertDialog.Builder(this)
+			.setTitle("Abort TTS")
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.setMessage("Cancel Speaking?")
+			.setPositiveButton(R.string.tts_cancel,
+					new Dialog.OnClickListener() {
+						public void onClick(
+								final DialogInterface pDialog,
+								final int pWhich) {
+							mTts.stop();
+						}
+					}).create();
 		default:
 			return super.onCreateDialog(pDialogID);
 		}
@@ -175,7 +190,6 @@ public class HelpME extends Activity implements OnInitListener {
 		if (requestCode == TTS_CHECK_CODE) {
 			if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
 				mTts = new TextToSpeech(this, this);
-				mTts.setLanguage(locale);
 			} else {
 				this.showDialog(DIALOG_NO_TTS);
 			}
@@ -189,8 +203,33 @@ public class HelpME extends Activity implements OnInitListener {
 			mTts.shutdown();
 		super.onDestroy();
 	}
-
+	
+	/**
+	 * Called when tts engine finished initialization
+	 * 
+	 * @param int status code which can be checked for success/error of init.
+	 */
 	public void onInit(int status) {
+		if(status==TextToSpeech.SUCCESS){
+			mTts.setLanguage(locale);
+			//set UtteranceCompleted to get notified when TTS speaking finishes
+			int code = mTts.setOnUtteranceCompletedListener(this);
+		}
+		else if(status==TextToSpeech.ERROR)
+			  mTts.shutdown();
+	}
+	
+	/**
+	 * Implements OnUtteranceCompletedListener Interface.
+	 * Fires when an utterance is complete.
+	 * 
+	 * @param String utteranceId ID which was passed to speak() method...
+	 */
+	public void onUtteranceCompleted(String utteranceId) {
+		if(utteranceId.equals(TTS_UTTERANCE_ID_BEFORE_HELP_MSG))
+			startVoiceRecognitionActivity();
+		if(utteranceId.equals(TTS_UTTERANCE_ID_FINAL_HELP_MSG))
+			dismissDialog(DIALOG_ABORT_TTS);
 	}
 
 	/**
@@ -229,10 +268,15 @@ public class HelpME extends Activity implements OnInitListener {
 		testContact.add(c1);
 		sendHelpMsgs(testContact, helpMsg);
 		
-		if(USE_SPEECH_SERVICES)
+		if(USE_SPEECH_SERVICES) {
+			HashMap<String, String> ttsParams = new HashMap<String, String>();
+			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, TTS_UTTERANCE_ID_FINAL_HELP_MSG);
+			
 			mTts.speak(getString(R.string.tts_message_sent) + helpMsg,
-					TextToSpeech.QUEUE_FLUSH, null);
-	}
+					TextToSpeech.QUEUE_FLUSH, ttsParams);
+			showDialog(DIALOG_ABORT_TTS);
+		}
+	}		
 
 	/**
 	 * Choose message types and send sms/email

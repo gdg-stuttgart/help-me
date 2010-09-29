@@ -223,8 +223,6 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 	 */
 	public void onInit(int status) {
 		if(status==TextToSpeech.SUCCESS){
-			setCurrentTTSLocale();
-			
 			//set UtteranceCompleted to get notified when TTS speaking finishes
 			mTts.setOnUtteranceCompletedListener(this);
 		}
@@ -352,7 +350,7 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 		 * TODO: remove for production mode
 		 */
 		Toast.makeText(getApplicationContext(),
-				"TODO: Email triggered remove in prod mode: )" + message, Toast.LENGTH_LONG).show();
+				"TODO: Email triggered remove in prod mode: )" + message, Toast.LENGTH_SHORT).show();
 		
 		final Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("plain/text");
@@ -380,7 +378,7 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 		 * smsMngr.sendTextMessage(sendTo, this.getString(R.string.app_name),messageChunk, null, null);
 		 */
 		Toast.makeText(getApplicationContext(),
-				"SMS send, remove in prod. mode msg: " + messageChunk, Toast.LENGTH_LONG).show();
+				"SMS send, remove in prod. mode msg: " + messageChunk, Toast.LENGTH_SHORT).show();
 	}
 
 	/**

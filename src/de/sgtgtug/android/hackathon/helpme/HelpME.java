@@ -225,7 +225,7 @@ public class HelpME extends Activity implements OnInitListener {
 		// PreferencesUtil
 		// .getAllEmergencyContacts(this);
 		ArrayList<HelperContact> testContact = new ArrayList<HelperContact>();
-		HelperContact c1 = new HelperContact("5556", "");
+		HelperContact c1 = new HelperContact("5556", "gtugna@googlemail.com");
 		testContact.add(c1);
 		sendHelpMsgs(testContact, helpMsg);
 		

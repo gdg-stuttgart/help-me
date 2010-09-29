@@ -13,11 +13,17 @@ public class HelpMePreferences extends PreferenceActivity implements
 
 	private Preference shareContactsPreference;
 
+	public static final String PREFERENCE_CONTACTS = "contacts";
 	public static final String PREFERENCE_USER_NAME = "user_name";
 	public static final String PREFERENCE_USER_SEX = "user_sex";
 	public static final String PREFERENCE_USER_AGE = "user_age";
 	public static final String PREFERENCE_SECURITY_NR = "user_security_nr";
-	public static final String PREFERENCE_CONTACTS = "contacts";
+
+	//Notifications
+	public static final String PREFERENCE_USE_SPEECH_SERVICES = "use_tts_stt";
+	public static final String PREFERENCE_USE_SMS_MSG = "use_sms";
+	public static final String PREFERENCE_USE_EMAIL_MSG = "use_email";
+
 
 	protected static final int ACTIVITY_RESULT_CONTACTS = 2;
 
@@ -36,6 +42,12 @@ public class HelpMePreferences extends PreferenceActivity implements
 				.setOnPreferenceChangeListener(this);
 		findPreference(HelpMePreferences.PREFERENCE_SECURITY_NR)
 				.setOnPreferenceChangeListener(this);
+		findPreference(HelpMePreferences.PREFERENCE_USE_SPEECH_SERVICES)
+				.setOnPreferenceChangeListener(this);
+		findPreference(HelpMePreferences.PREFERENCE_USE_SMS_MSG)
+		.setOnPreferenceChangeListener(this);
+		findPreference(HelpMePreferences.PREFERENCE_USE_EMAIL_MSG)
+		.setOnPreferenceChangeListener(this);
 
 		configurePreferences();
 	}
@@ -101,7 +113,23 @@ public class HelpMePreferences extends PreferenceActivity implements
 		findPreference(HelpMePreferences.PREFERENCE_SECURITY_NR).setSummary(
 				sharedPrefs.getString(HelpMePreferences.PREFERENCE_SECURITY_NR,
 						getString(R.string.preferences_insurance_id)));
-
+		
+		
+		findPreference(HelpMePreferences.PREFERENCE_USE_SPEECH_SERVICES).setSummary(
+				sharedPrefs.getBoolean(HelpMePreferences.PREFERENCE_USE_SPEECH_SERVICES, true)
+				? getString(R.string.summary_speech_services_enabled_preference)
+				: getString(R.string.summary_speech_services_disabled_preference));
+		
+		findPreference(HelpMePreferences.PREFERENCE_USE_SMS_MSG).setSummary(
+				sharedPrefs.getBoolean(HelpMePreferences.PREFERENCE_USE_SMS_MSG, true)
+				? getString(R.string.summary_sms_enabled_preference)
+				: getString(R.string.summary_sms_disabled_preference));
+		
+		findPreference(HelpMePreferences.PREFERENCE_USE_EMAIL_MSG).setSummary(
+				sharedPrefs.getBoolean(HelpMePreferences.PREFERENCE_USE_EMAIL_MSG, true)
+				? getString(R.string.summary_email_enabled_preference)
+				: getString(R.string.summary_email_disabled_preference));
+		
 	}
 
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -140,7 +168,27 @@ public class HelpMePreferences extends PreferenceActivity implements
 			return true;
 		}
 
+		if (preference.getKey().equals(PREFERENCE_USE_SPEECH_SERVICES)) {
+			preference.setSummary(((Boolean) newValue)
+								  ? getString(R.string.summary_speech_services_enabled_preference)
+							      : getString(R.string.summary_speech_services_disabled_preference));
+			return true;
+		}
+		
+		if (preference.getKey().equals(PREFERENCE_USE_SMS_MSG)) {
+			preference.setSummary(((Boolean) newValue)
+								  ? getString(R.string.summary_sms_enabled_preference)
+							      : getString(R.string.summary_sms_disabled_preference));
+			return true;
+		}
+		
+		if (preference.getKey().equals(PREFERENCE_USE_EMAIL_MSG)) {
+			preference.setSummary(((Boolean) newValue)
+								  ? getString(R.string.summary_email_enabled_preference)
+							      : getString(R.string.summary_email_disabled_preference));
+			return true;
+		}
+
 		return false;
 	}
-
 }

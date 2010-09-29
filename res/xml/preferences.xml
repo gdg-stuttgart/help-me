@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="@string/emergency_contacts_preferences">
+
+		<PreferenceScreen android:key="contacts"
+			android:title="@string/title_add_contacts_preference"
+			android:summary="@string/summary_add_contacts_preference">
+
+		</PreferenceScreen>
+
+	</PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/personal_preferences">
 
@@ -28,14 +37,22 @@
 
 	</PreferenceCategory>
 	
-	<PreferenceCategory android:title="@string/emergency_contacts_preferences">
+	
+	
+	<PreferenceCategory android:title="@string/msg_notification_preferences">
 
-		<PreferenceScreen android:key="contacts"
-			android:title="@string/title_add_contacts_preference"
-			android:summary="@string/summary_add_contacts_preference">
-
-		</PreferenceScreen>
-
+		<CheckBoxPreference android:key="use_tts_stt"
+			android:title="@string/title_speech_services_preference"
+			android:defaultValue="true"/>
+			
+		<CheckBoxPreference android:key="use_sms"
+			android:title="@string/title_sms_preference"
+			android:defaultValue="true"/>
+			
+		<CheckBoxPreference android:key="use_email"
+			android:title="@string/title_email_preference"
+			android:defaultValue="true"/>
+		
 	</PreferenceCategory>
-
+	
 </PreferenceScreen>

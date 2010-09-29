@@ -10,6 +10,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -18,6 +19,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
@@ -36,34 +38,43 @@ public class HelpME extends Activity implements OnInitListener {
 	private static final int TTS_CHECK_CODE = 0x001;
 	private static final int DIALOG_NO_TTS = 0x002;
 
-	private static final int MENU_SETUP = 1;
-	private static final int MENU_ABOUT = 2;
-
+	private static final int MENU_SETUP = 0x003;
+	private static final int MENU_ABOUT = 0x004;
+	
+	private boolean USE_SPEECH_SERVICES;
+	private boolean USE_SMS_MSG;
+	private boolean USE_EMAIL_MSG;
 	private boolean STT_AVAILABLE = false;
-	private boolean MSG_TYPE_SMS = true;
-	private boolean MSG_TYPE_EMAIL = false;
 
 	private Locale locale = Locale.US;
 	private TextToSpeech mTts = null;
+
+	private SharedPreferences sharedPrefs;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		/*
-		 * hide title and force portrait mode
-		 */
+		// hide title and force portrait mode
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		// ---change to landscape mode only---
+		// ---use portrait mode only---
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		setContentView(R.layout.main);
-
+		
 		checkforSpeechServices();
-
 	}
-
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		sharedPrefs = PreferenceManager
+		.getDefaultSharedPreferences(getApplicationContext());
+		USE_SPEECH_SERVICES = sharedPrefs.getBoolean(HelpMePreferences.PREFERENCE_USE_SPEECH_SERVICES, true);
+		USE_SMS_MSG = sharedPrefs.getBoolean(HelpMePreferences.PREFERENCE_USE_SMS_MSG, true);
+		USE_EMAIL_MSG = sharedPrefs.getBoolean(HelpMePreferences.PREFERENCE_USE_EMAIL_MSG, true);
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -106,7 +117,7 @@ public class HelpME extends Activity implements OnInitListener {
 	}
 
 	public void onButtonHelpClick(View v) {
-		if (STT_AVAILABLE) {
+		if (USE_SPEECH_SERVICES && STT_AVAILABLE) {
 			mTts.speak("Speak your help message now", TextToSpeech.QUEUE_FLUSH,
 					null);
 
@@ -217,6 +228,10 @@ public class HelpME extends Activity implements OnInitListener {
 		HelperContact c1 = new HelperContact("5556", "");
 		testContact.add(c1);
 		sendHelpMsgs(testContact, helpMsg);
+		
+		if(USE_SPEECH_SERVICES)
+			mTts.speak(getString(R.string.tts_message_sent) + helpMsg,
+					TextToSpeech.QUEUE_FLUSH, null);
 	}
 
 	/**
@@ -227,9 +242,9 @@ public class HelpME extends Activity implements OnInitListener {
 	 */
 	private void sendHelpMsgs(List<HelperContact> contacts, String msg) {
 		for (HelperContact contact : contacts) {
-			if (MSG_TYPE_SMS)
+			if (USE_SMS_MSG)
 				sendSMS(msg.toString(), contact.sms);
-			if (MSG_TYPE_EMAIL)
+			if (USE_EMAIL_MSG)
 				sendEmail(msg.toString(), contact.email);
 		}
 	}
@@ -243,10 +258,15 @@ public class HelpME extends Activity implements OnInitListener {
 	 */
 	private String createHelpMsg(String voiceMsg) {
 		StringBuffer msgBfr = new StringBuffer();
-		/** @TODO Read general health settings and append to buffer */
-		msgBfr.append(getString(R.string.tts_helpMe) + "\n");
+		String name = sharedPrefs.getString(HelpMePreferences.PREFERENCE_USER_NAME, "");
+		String sex = sharedPrefs.getString(HelpMePreferences.PREFERENCE_USER_SEX, "");
+		String age = sharedPrefs.getString(HelpMePreferences.PREFERENCE_USER_AGE, "");
+		String securityNr = sharedPrefs.getString(HelpMePreferences.PREFERENCE_SECURITY_NR, "");
+		msgBfr.append(getString(R.string.helpmsg_helpMe) + "\n");
+		msgBfr.append(getString(R.string.helpmsg_iam) + "\n");
+		msgBfr.append(name + "\n" + sex + "\n" + age + "\n" + securityNr + "\n");
 		msgBfr.append(getEmergencyLocation());
-		msgBfr.append(R.string.tts_helpMe + voiceMsg + "\n");
+		msgBfr.append(R.string.tts_voice_msg + voiceMsg + "\n");
 		return msgBfr.toString();
 	}
 
@@ -259,6 +279,12 @@ public class HelpME extends Activity implements OnInitListener {
 	 *            the recipient of the help message
 	 */
 	private void sendEmail(String message, String sendTo) {
+		/*
+		 * TODO: remove for production mode
+		 */
+		Toast.makeText(getApplicationContext(),
+				"TODO: Email triggerred (remove in production mode)", Toast.LENGTH_SHORT).show();
+		
 		final Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("plain/text");
 		intent.putExtra(Intent.EXTRA_EMAIL, new String[] { sendTo });
@@ -280,10 +306,12 @@ public class HelpME extends Activity implements OnInitListener {
 
 		ArrayList<String> chunkedMessages = smsMngr.divideMessage(msg);
 		for (String messageChunk : chunkedMessages)
-//			smsMngr.sendTextMessage(sendTo, this.getString(R.string.app_name),
-//					messageChunk, null, null);
-		mTts.speak(getString(R.string.tts_message_sent) + msg,
-				TextToSpeech.QUEUE_FLUSH, null);
+		/*
+		 * TODO: uncomment for production mode
+		 * smsMngr.sendTextMessage(sendTo, this.getString(R.string.app_name),messageChunk, null, null);
+		 */
+		Toast.makeText(getApplicationContext(),
+				"TODO: Uncomment SMS sending in production mode", Toast.LENGTH_SHORT).show();
 	}
 
 	/**
@@ -361,7 +389,7 @@ public class HelpME extends Activity implements OnInitListener {
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 				getLanguageModel());
-		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak help message!");
+		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, R.string.tts_speak_hlp_msg_now_dialog);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, locale.toString());
 		startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
 	}

@@ -33,8 +33,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
-public class HelpME extends Activity implements OnInitListener, OnUtteranceCompletedListener {
-	private static String LOG_TAG = "HelpME";
+public class HelpMEActivity extends Activity implements OnInitListener, OnUtteranceCompletedListener {
 	
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 0x000;
 	private static final int TTS_CHECK_CODE = 0x001;
@@ -274,7 +273,7 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 		if (activities.size() > 0)
 			STT_AVAILABLE = true;
 		else
-			Log.w(LOG_TAG, "Recognizer not present");
+			Log.w(HelpMeApp.LOG_TAG, "Recognizer not present");
 	}
 
 	/**
@@ -390,7 +389,7 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 		StringBuffer locBuf = new StringBuffer();
 		Location currLoc = getCurrentLocation();
 		if (currLoc != null) {
-			Log.i(LOG_TAG, "Current  Location -> Lat: " + currLoc.getLatitude()
+			Log.i(HelpMeApp.LOG_TAG, "Current  Location -> Lat: " + currLoc.getLatitude()
 					+ "Long: " + currLoc.getLongitude());
 			locBuf.append(R.string.tts_iam_at + currLoc.getLatitude() + " Long: "
 					+ currLoc.getLongitude() + "\n");
@@ -442,7 +441,7 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 			return gCoder.getFromLocation(currLoc.getLatitude(),
 					currLoc.getLongitude(), 1);
 		} catch (Exception e) {
-			Log.e(LOG_TAG,
+			Log.e(HelpMeApp.LOG_TAG,
 					"Could not resolve GeoLocation, here is what i know: "
 							+ e.getMessage());
 			return null;

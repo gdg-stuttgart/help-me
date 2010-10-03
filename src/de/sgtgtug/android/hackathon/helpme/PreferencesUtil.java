@@ -10,7 +10,7 @@ import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
-import de.sgtgtug.android.hackathon.helpme.HelpME.HelperContact;
+import de.sgtgtug.android.hackathon.helpme.HelpMEActivity.HelperContact;
 
 public class PreferencesUtil {
 

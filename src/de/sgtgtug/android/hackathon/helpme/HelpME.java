@@ -465,11 +465,6 @@ public class HelpME extends Activity implements OnInitListener, OnUtteranceCompl
 	 * Returns the language model to be used with speech recognition
 	 * 
 	 * @return a constant indicating which language model is used
-	 * 
-	 * @TODO let user choose from settings in future.
-	 * 
-	 *       For now default: LANGUAGE_MODEL_WEB_SEARCH
-	 * 
 	 * */
 	private String getLanguageModel() {
 		String prefsLocale = sharedPrefs.getString(

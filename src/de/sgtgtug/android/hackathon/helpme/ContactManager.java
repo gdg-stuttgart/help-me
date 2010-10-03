@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -75,14 +76,14 @@ public final class ContactManager extends Activity {
 					contactIds.add(contactId);
 				}
 
+				SharedPreferences sharedPrefs = getPreferences(MODE_PRIVATE);
 				PreferencesUtil.saveEmergencyContactIdsToPreferences(
-						getPreferences(MODE_PRIVATE), contactIds);
+						sharedPrefs, contactIds);
 
 				finish();
 			}
 		});
 
-		// Populate the contact list
 		populateContactList();
 		setCheckBoxes();
 	}
@@ -93,9 +94,10 @@ public final class ContactManager extends Activity {
 			return;
 		}
 		;
-
+		
+		SharedPreferences sharedPrefs = getPreferences(MODE_PRIVATE);
 		List<Long> ids = PreferencesUtil
-				.loadEmergencyContactIdsFromPreferences(getPreferences(MODE_PRIVATE));
+				.loadEmergencyContactIdsFromPreferences(sharedPrefs);
 
 		SimpleCursorAdapter sca = (SimpleCursorAdapter) mContactList
 				.getAdapter();
@@ -112,16 +114,20 @@ public final class ContactManager extends Activity {
 	}
 
 	/**
-	 * Populate the contact list based on account currently selected in the
+	 * Populate the contact list based on accounts currently selected in the
 	 * account spinner.
 	 */
 	private void populateContactList() {
 		Cursor cursor = getContacts();
+		
+		startManagingCursor(cursor);
+		
 		String[] fields = new String[] { ContactsContract.Data.DISPLAY_NAME };
 
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
 				android.R.layout.simple_list_item_multiple_choice, cursor,
 				fields, new int[] { android.R.id.text1 });
+		
 		mContactList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
 		mContactList.setAdapter(adapter);

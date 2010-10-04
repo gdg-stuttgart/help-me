@@ -55,7 +55,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 	private TextToSpeech mTts = null;
 
 	private SharedPreferences sharedPrefs;
-	private HelpMeApp app;
+	private HelpMEApp app;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -75,12 +75,12 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 	@Override
 	protected void onResume() {
 		super.onResume();
-		app = HelpMeApp.getInstance();
+		app = HelpMEApp.getInstance();
 		sharedPrefs = PreferenceManager
 		.getDefaultSharedPreferences(getApplicationContext());
-		USE_SPEECH_SERVICES = sharedPrefs.getBoolean(HelpMePreferences.PREFERENCE_USE_SPEECH_SERVICES, true);
-		USE_SMS_MSG = sharedPrefs.getBoolean(HelpMePreferences.PREFERENCE_USE_SMS_MSG, true);
-		USE_EMAIL_MSG = sharedPrefs.getBoolean(HelpMePreferences.PREFERENCE_USE_EMAIL_MSG, true);
+		USE_SPEECH_SERVICES = sharedPrefs.getBoolean(HelpMEPreferences.PREFERENCE_USE_SPEECH_SERVICES, true);
+		USE_SMS_MSG = sharedPrefs.getBoolean(HelpMEPreferences.PREFERENCE_USE_SMS_MSG, true);
+		USE_EMAIL_MSG = sharedPrefs.getBoolean(HelpMEPreferences.PREFERENCE_USE_EMAIL_MSG, true);
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,7 +110,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 
 	public void onSetupClick(View v) {
 		startActivity(new Intent(getApplicationContext(),
-				HelpMePreferences.class));
+				HelpMEPreferences.class));
 	}
 
 	public void onAboutClick(View v) {
@@ -203,7 +203,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 	private Locale getLanguageAsBCP47() {
 		
 		Integer prefsLocale = new Integer(sharedPrefs.getString(
-				HelpMePreferences.PREFERENCE_SPEECH_SERVICES_LOCALES, "-1"));
+				HelpMEPreferences.PREFERENCE_SPEECH_SERVICES_LOCALES, "-1"));
 		switch (prefsLocale) {
 		case 0:
 			return Locale.US;
@@ -274,7 +274,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 		if (activities.size() > 0)
 			STT_AVAILABLE = true;
 		else
-			Log.w(HelpMeApp.LOG_TAG, "Recognizer not present");
+			Log.w(HelpMEApp.LOG_TAG, "Recognizer not present");
 	}
 
 	/**
@@ -325,10 +325,10 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 	 */
 	private String createHelpMsg(String voiceMsg) {
 		StringBuffer msgBfr = new StringBuffer();
-		String name = sharedPrefs.getString(HelpMePreferences.PREFERENCE_USER_NAME, "");
-		String sex = sharedPrefs.getString(HelpMePreferences.PREFERENCE_USER_SEX, "");
-		String age = sharedPrefs.getString(HelpMePreferences.PREFERENCE_USER_AGE, "");
-		String securityNr = sharedPrefs.getString(HelpMePreferences.PREFERENCE_SECURITY_NR, "");
+		String name = sharedPrefs.getString(HelpMEPreferences.PREFERENCE_USER_NAME, "");
+		String sex = sharedPrefs.getString(HelpMEPreferences.PREFERENCE_USER_SEX, "");
+		String age = sharedPrefs.getString(HelpMEPreferences.PREFERENCE_USER_AGE, "");
+		String securityNr = sharedPrefs.getString(HelpMEPreferences.PREFERENCE_SECURITY_NR, "");
 		msgBfr.append(getString(R.string.helpmsg_helpMe) + "\n");
 		msgBfr.append(getString(R.string.helpmsg_iam) + "\n");
 		msgBfr.append(name + "\n" + sex + "\n" + age + "\n" + securityNr + "\n");
@@ -388,7 +388,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 		StringBuffer locBuf = new StringBuffer();
 		Location currLoc = getCurrentLocation();
 		if (currLoc != null) {
-			Log.i(HelpMeApp.LOG_TAG, "Current  Location -> Lat: " + currLoc.getLatitude()
+			Log.i(HelpMEApp.LOG_TAG, "Current  Location -> Lat: " + currLoc.getLatitude()
 					+ "Long: " + currLoc.getLongitude());
 			locBuf.append(R.string.tts_iam_at + currLoc.getLatitude() + " Long: "
 					+ currLoc.getLongitude() + "\n");
@@ -440,7 +440,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 			return gCoder.getFromLocation(currLoc.getLatitude(),
 					currLoc.getLongitude(), 1);
 		} catch (Exception e) {
-			Log.e(HelpMeApp.LOG_TAG,
+			Log.e(HelpMEApp.LOG_TAG,
 					"Could not resolve GeoLocation, here is what i know: "
 							+ e.getMessage());
 			return null;
@@ -466,7 +466,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 	 * */
 	private String getLanguageModel() {
 		String prefsLocale = sharedPrefs.getString(
-				HelpMePreferences.PREFERENCE_SPEECH_SERVICES_LOCALES, "0");
+				HelpMEPreferences.PREFERENCE_SPEECH_SERVICES_LOCALES, "0");
 		return prefsLocale.equals("1") ? RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH
 				: RecognizerIntent.LANGUAGE_MODEL_FREE_FORM;
 	}

@@ -55,6 +55,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 	private TextToSpeech mTts = null;
 
 	private SharedPreferences sharedPrefs;
+	private HelpMeApp app;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -74,6 +75,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 	@Override
 	protected void onResume() {
 		super.onResume();
+		app = HelpMeApp.getInstance();
 		sharedPrefs = PreferenceManager
 		.getDefaultSharedPreferences(getApplicationContext());
 		USE_SPEECH_SERVICES = sharedPrefs.getBoolean(HelpMePreferences.PREFERENCE_USE_SPEECH_SERVICES, true);
@@ -115,8 +117,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 		/*
 		 * TODO: add About dialog
 		 */
-		Toast.makeText(getApplicationContext(),
-				"TODO: Add some application info", Toast.LENGTH_SHORT).show();
+		app.showToast("TODO: Add some application info", Toast.LENGTH_SHORT);
 	}
 
 	public void onButtonHelpClick(View v) {
@@ -348,8 +349,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 		/*
 		 * TODO: remove for production mode
 		 */
-		Toast.makeText(getApplicationContext(),
-				"TODO: Email triggered remove in prod mode: )" + message, Toast.LENGTH_SHORT).show();
+		app.showToast("TODO: Email triggered remove in prod mode: )" + message, Toast.LENGTH_SHORT);
 		
 		final Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("plain/text");
@@ -376,8 +376,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 		 * TODO: uncomment for production mode
 		 * smsMngr.sendTextMessage(sendTo, this.getString(R.string.app_name),messageChunk, null, null);
 		 */
-		Toast.makeText(getApplicationContext(),
-				"SMS send, remove in prod. mode msg: " + messageChunk, Toast.LENGTH_SHORT).show();
+			app.showToast("SMS send, remove in prod. mode msg: " + messageChunk, Toast.LENGTH_SHORT);
 	}
 
 	/**

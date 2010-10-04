@@ -18,9 +18,13 @@
 	    <activity android:name=".HelpMEPreferences"></activity>
 </application>
     <uses-sdk android:minSdkVersion="8" />
+    <!-- Permission for sending sms message in case of emergency -->
     <uses-permission android:name="android.permission.SEND_SMS" />
+    <!-- Permissions to access coarse and fine grained case of emergency -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- Permission to send email in case of emergency -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Permission to read contacts that will be notified case of emergency -->
 	<uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
 </manifest> 

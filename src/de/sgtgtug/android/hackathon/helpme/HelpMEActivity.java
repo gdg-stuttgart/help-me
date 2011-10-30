@@ -34,7 +34,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 public class HelpMEActivity extends Activity implements OnInitListener, OnUtteranceCompletedListener {
-	
+
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 0x000;
 	private static final int TTS_CHECK_CODE = 0x001;
 	private static final int DIALOG_NO_TTS = 0x002;
@@ -42,10 +42,10 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 
 	private static final int MENU_SETUP = 0x004;
 	private static final int MENU_ABOUT = 0x005;
-	
+
 	private static final String TTS_UTTERANCE_ID_FINAL_HELP_MSG = "text_after_help_msg";
 	private static final String TTS_UTTERANCE_ID_BEFORE_HELP_MSG = "text_before_help_msg";
-	
+
 	private boolean USE_SPEECH_SERVICES;
 	private boolean USE_SMS_MSG;
 	private boolean USE_EMAIL_MSG;
@@ -68,10 +68,10 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		setContentView(R.layout.main);
-		
+
 		checkforSpeechServices();
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -199,9 +199,9 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 			mTts.shutdown();
 		super.onDestroy();
 	}
-	
+
 	private Locale getLanguageAsBCP47() {
-		
+
 		Integer prefsLocale = new Integer(sharedPrefs.getString(
 				HelpMEPreferences.PREFERENCE_SPEECH_SERVICES_LOCALES, "-1"));
 		switch (prefsLocale) {
@@ -215,10 +215,10 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 			return Locale.US;
 		}
     }
-	
+
 	/**
 	 * Called when tts engine finished initialization
-	 * 
+	 *
 	 * @param int status code which can be checked for success/error of init.
 	 */
 	public void onInit(int status) {
@@ -232,12 +232,12 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 
 	private void setCurrentTTSLocale() {
 		locale = getLanguageAsBCP47();
-		if(mTts.isLanguageAvailable(locale) == TextToSpeech.LANG_COUNTRY_AVAILABLE) 
+		if(mTts.isLanguageAvailable(locale) == TextToSpeech.LANG_COUNTRY_AVAILABLE)
 			mTts.setLanguage(locale);
 		else
 			mTts.setLanguage(Locale.getDefault());
 	}
-	
+
 	private void speak(String text, String utteranceID) {
 		setCurrentTTSLocale();
 		HashMap<String, String> ttsParams = new HashMap<String, String>();
@@ -245,11 +245,11 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 		mTts.speak(text, TextToSpeech.QUEUE_FLUSH,
 				ttsParams);
 	}
-	
+
 	/**
 	 * Implements OnUtteranceCompletedListener Interface.
 	 * Fires when an utterance is complete (TTS speaking finished).
-	 * 
+	 *
 	 * @param String utteranceId ID which was passed to speak() method...
 	 */
 	public void onUtteranceCompleted(String utteranceId) {
@@ -279,7 +279,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 
 	/**
 	 * Reads contacts which should be notified and triggers sending help message
-	 * 
+	 *
 	 * @param voiceText
 	 *            an array containing voice recognition help message text
 	 */
@@ -294,16 +294,16 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 		HelperContact c1 = new HelperContact("5556", "gtugna@googlemail.com");
 		testContact.add(c1);
 		sendHelpMsgs(testContact, helpMsg);
-		
+
 		if(USE_SPEECH_SERVICES) {
 			speak(getString(R.string.tts_message_sent) + helpMsg, TTS_UTTERANCE_ID_FINAL_HELP_MSG);
 			showDialog(DIALOG_ABORT_TTS);
 		}
-	}		
+	}
 
 	/**
 	 * Choose message types and send sms/email
-	 * 
+	 *
 	 * @param contacts
 	 *            list of contacts which should be notified
 	 */
@@ -318,7 +318,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 
 	/**
 	 * Creates a help message consisting of geo-location and voice message
-	 * 
+	 *
 	 * @param voiceMsg
 	 *            String representation of recorded voice message
 	 * @return Returns a message containing geo-location and help message
@@ -339,7 +339,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 
 	/**
 	 * Sends help Email to contacts
-	 * 
+	 *
 	 * @param message
 	 *            the message to be sent
 	 * @param sendTo
@@ -350,7 +350,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 		 * TODO: remove for production mode
 		 */
 		app.showToast("TODO: Email triggered remove in prod mode: )" + message, Toast.LENGTH_SHORT);
-		
+
 		final Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("plain/text");
 		intent.putExtra(Intent.EXTRA_EMAIL, new String[] { sendTo });
@@ -361,7 +361,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 
 	/**
 	 * Sends help SMS to contacts
-	 * 
+	 *
 	 * @param msg
 	 *            the message to be sent
 	 * @param sendTo
@@ -381,7 +381,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 
 	/**
 	 * Builds current location and reverse geocoded address
-	 * 
+	 *
 	 * @return A String containing the current location + address
 	 */
 	private String getEmergencyLocation() {
@@ -412,7 +412,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 
 	/**
 	 * Gets last known location from the device
-	 * 
+	 *
 	 * @return Location
 	 */
 	private Location getCurrentLocation() {
@@ -428,7 +428,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 
 	/**
 	 * Reverse geocoding of current location
-	 * 
+	 *
 	 * @param currLoc
 	 *            current location
 	 * @return List address locations
@@ -461,7 +461,7 @@ public class HelpMEActivity extends Activity implements OnInitListener, OnUttera
 
 	/**
 	 * Returns the language model to be used with speech recognition
-	 * 
+	 *
 	 * @return a constant indicating which language model is used
 	 * */
 	private String getLanguageModel() {

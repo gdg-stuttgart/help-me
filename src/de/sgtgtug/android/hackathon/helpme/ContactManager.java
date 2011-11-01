@@ -94,7 +94,7 @@ public final class ContactManager extends Activity {
 			return;
 		}
 		;
-		
+
 		SharedPreferences sharedPrefs = getPreferences(MODE_PRIVATE);
 		List<Long> ids = PreferencesUtil
 				.loadEmergencyContactIdsFromPreferences(sharedPrefs);
@@ -119,15 +119,15 @@ public final class ContactManager extends Activity {
 	 */
 	private void populateContactList() {
 		Cursor cursor = getContacts();
-		
+
 		startManagingCursor(cursor);
-		
+
 		String[] fields = new String[] { ContactsContract.Data.DISPLAY_NAME };
 
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
 				android.R.layout.simple_list_item_multiple_choice, cursor,
 				fields, new int[] { android.R.id.text1 });
-		
+
 		mContactList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
 		mContactList.setAdapter(adapter);
@@ -135,7 +135,7 @@ public final class ContactManager extends Activity {
 
 	/**
 	 * Obtains the contact list for the currently selected account.
-	 * 
+	 *
 	 * @return A cursor for for accessing the contact list.
 	 */
 	private Cursor getContacts() {
